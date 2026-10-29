@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boomerang Mini App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #121324;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        /* Шапка */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #181931;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .logo span {
+            color: #ffb800;
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .balance {
+            background: #1c1e3d;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #2b2e5c;
+        }
+        .balance-icon {
+            color: #3b82f6;
+        }
+
+        .btn-deposit {
+            background: #5856d6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(88, 86, 214, 0.4);
+        }
+
+        /* Головний контейнер банера */
+        .promo-banner {
+            margin: 15px;
+            background: linear-gradient(135deg, #1d1b4c 0%, #0d0c22 100%);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            border: 1px solid #322f75;
+            overflow: hidden;
+        }
+
+        .promo-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .promo-subtitle {
+            color: #a4a2cb;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-promo {
+            background: #5856d6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Секція Кейсу */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 20px 15px 10px 15px;
+        }
+
+        .case-container {
+            background: #181931;
+            margin: 15px;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #25274d;
+            text-align: center;
+        }
+
+        /* Рулетка / Стрічка */
+        .roulette-wrapper {
+            position: relative;
+            width: 100%;
+            height: 130px;
+            background: #111224;
+            border-radius: 15px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid #2a2c59;
+        }
+
+        /* Маркер центру */
+        .roulette-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #ffb800;
+            z-index: 10;
+            box-shadow: 0 0 10px #ffb800;
+        }
+
+        .roulette-tape {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+            will-change: transform;
+        }
+
+        .roulette-item {
+            width: 100px;
+            height: 100px;
+            background: #1c1e3d;
+            margin: 0 5px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            border: 1px solid #2b2e5c;
+        }
+
+        .roulette-item img {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .roulette-item span {
+            font-size: 11px;
+            color: #a4a2cb;
+            font-weight: 600;
+        }
+
+        .timer {
+            color: #a4a2cb;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Що може випасти (Грід предметів) */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 15px;
+        }
+
+        .grid-item {
+            background: #181931;
+            border-radius: 15px;
+            padding: 15px 10px;
+            text-align: center;
+            border: 1px solid #25274d;
+        }
+
+        .item-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .item-name {
+            font-size: 12px;
+            color: #ffffff;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .item-price {
+            font-size: 13px;
+            color: #ffb800;
+            font-weight: 700;
+        }
+
+        /* Нижня навігація */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #181931;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #25274d;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #7a799e;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #5856d6;
+        }
+
+        /* Стилізація кнопки відкриття */
+        .btn-open-case {
+            background: #ffb800;
+            color: #121324;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка додатка -->
+    <div class="header">
+        <div class="logo">Boomerang</div>
+        <div class="balance-container">
+            <div class="balance">
+                <span class="balance-icon">₽</span>
+                <span id="user-balance">16</span>
+            </div>
+            <button class="btn-deposit">Поповнити</button>
+        </div>
+    </div>
+
+    <!-- Головний промо-банер -->
+    <div class="promo-banner">
+        <div class="promo-title">Подарунок</div>
+        <div class="promo-subtitle">за поповнення</div>
+        <button class="btn-promo">Поповнити ➔</button>
+    </div>
+
+    <!-- Секція Подарунок дня -->
+    <div class="section-title">Подарунок дня</div>
+    <div class="case-container">
+        <div class="roulette-wrapper">
+            <div class="roulette-tape" id="tape">
+                <!-- Елементи рулетки згенеруються через JS -->
+            </div>
+        </div>
+        <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Відкрити безкоштовно</button>
+        <div class="timer" id="timer-text">Доступно зараз</div>
+    </div>
+
+    <!-- Список призів -->
+    <div class="section-title">Що може випасти</div>
+    <div class="items-grid">
+        <div class="grid-item">
+            <span class="item-icon">🪙</span>
+            <div class="item-name">На баланс</div>
+            <div class="item-price">1 ₽</div>
+        </div>
+        <div class="grid-item">
+            <span class="item-icon">🪙</span>
+            <div class="item-name">На баланс</div>
+            <div class="item-price">3 ₽</div>
+        </div>
+        <div class="grid-item">
+            <span class="item-icon">🪙</span>
+            <div class="item-name">На баланс</div>
+            <div class="item-price">5 ₽</div>
+        </div>
+        <div class="grid-item">
+            <span class="item-icon">🧸</span>
+            <div class="item-name">Мишка</div>
+            <div class="item-price">24 ₽</div>
+        </div>
+        <div class="grid-item">
+            <span class="item-icon">💝</span>
+            <div class="item-name">Серце</div>
+            <div class="item-price">24 ₽</div>
+        </div>
+        <div class="grid-item">
+            <span class="item-icon">🌹</span>
+            <div class="item-name">Роза</div>
+            <div class="item-price">40 ₽</div>
+        </div>
+    </div>
+
+    <!-- Нижня панель меню -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🕹</span>
+            Ігри
+        </a>
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">📦</span>
+            Кейси
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">💼</span>
+            Заробіток
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🎁</span>
+            Бонуси
+        </a>
+    </div>
+
+    <script>
+        // Список можливих призів для рулетки
+        const prizePool = [
+            { icon: '🪙', name: '1 ₽', value: 1 },
+Будьте обачні, використовуючи код.
+{ icon: '🪙', name: '3 ₽', value: 3 },
+{ icon: '🪙', name: '5 ₽', value: 5 },
+{ icon: '🧸', name: 'Мишка', value: 24 },
+{ icon: '💝', name: 'Серце', value: 24 },
+{ icon: '🌹', name: 'Роза', value: 40 },
+{ icon: '💎', name: 'Алмаз', value: 100 }
+];
+const tape = document.getElementById('tape');
+const spinBtn = document.getElementById('spin-btn');
+const balanceDisplay = document.getElementById('user-balance');
+const itemWidth = 110; // ширина елемента (100px) + margin (5px + 5px)
+// Генерація стрічки з випадковими предметами
+function generateTape() {
+tape.innerHTML = '';
+for (let i = 0; i < 40; i++) {
+const randomPrize = prizePool[Math.floor(Math.random() * prizePool.length)];
+const item = document.createElement('div');
+item.className = 'roulette-item';
+item.innerHTML = <img>${randomPrize.icon}</img><span>${randomPrize.name}</span>;
+item.dataset.value = randomPrize.value;
+item.dataset.isMoney = randomPrize.icon === '🪙';
+tape.appendChild(item);
+}
+}
+generateTape();
+function startSpin() {
+spinBtn.disabled = true;
+spinBtn.style.opacity = '0.5';
+generateTape();
+tape.style.transition = 'none';
+tape.style.transform = 'translateX(0px)';
+setTimeout(() => {
+const targetIndex = 28;
+const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2);
+tape.style.transition = 'transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)';
+tape.style.transform = translateX(${targetPosition}px);
+setTimeout(() => {
+const winningItem = tape.children[targetIndex];
+const isMoney = winningItem.dataset.isMoney === 'true';
+const prizeValue = parseInt(winningItem.dataset.value);
+if (isMoney) {
+let currentBalance = parseInt(balanceDisplay.innerText);
+balanceDisplay.innerText = currentBalance + prizeValue;
+alert(Вітаємо! Ви виграли ${prizeValue} ₽. Баланс оновлено!);
+} else {
+alert(Вітаємо! Ви виграли предмет: ${winningItem.querySelector('span').innerText}!);
+}
+startTimer();
+}, 4000);
+}, 50);
+}
+function startTimer() {
+let timeLeft = 24 * 60 * 60;
+const timerText = document.getElementById('timer-text');
+spinBtn.innerText = "Очікування...";
+const interval = setInterval(() => {
+if (timeLeft <= 0) {
+clearInterval(interval);
+timerText.innerText = "Доступно зараз";
+spinBtn.disabled = false;
+spinBtn.style.opacity = '1';
+spinBtn.innerText = "Відкрити безкоштовно";
+} else {
+timeLeft--;
+let hours = Math.floor(timeLeft / 3600);
+let minutes = Math.floor((timeLeft % 3600) / 60);
+let seconds = timeLeft % 60;
+hours = hours < 10 ? '0' + hours : hours;
+minutes = minutes < 10 ? '0' + minutes : minutes;
+seconds = seconds < 10 ? '0' + seconds : seconds;
+timerText.innerText = Наступне відкриття через ${hours}:${minutes}:${seconds};
+}
+}, 1000);
+}
