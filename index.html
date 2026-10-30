@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
-    <!-- Подключаем официальный скрипт Telegram для получения аватарок -->
+    <!-- Официальный скрипт Telegram для работы с данными юзера -->
     <script src="https://telegram.org"></script>
     <style>
         * {
@@ -23,7 +23,7 @@
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
-
+        /* СТИЛИ ЭКРАНА ЗАГРУЗКИ */
         #preloader {
             position: fixed;
             top: 0;
@@ -117,7 +117,6 @@
             display: block;
         }
 
-        /* Стильный блок профиля пользователя Telegram */
         .user-profile-header {
             display: flex;
             align-items: center;
@@ -459,6 +458,7 @@
 </head>
 <body>
 
+    <!-- АНИМИРОВАННЫЙ ЭКРАН ЗАГРУЗКИ BOOMERANG -->
     <div id="preloader">
         <div class="neon-loader-text">BOOMERANG</div>
     </div>
@@ -503,7 +503,7 @@
         <div class="loot-preview-grid" id="loot-preview-container">
         </div>
     </div>
-    <!-- ЭКРАН ТОПЛИВА -->
+    <!-- ЭКРАН ТОПЛИВА (АКТИВАЦИЯ ПРОМОКОДОВ) -->
     <div id="screen-deposit" class="app-screen">
         <div class="section-title">Активация Топлива</div>
         <div class="promo-input-box">
@@ -518,7 +518,6 @@
 
     <!-- ЭКРАН ПРОФИЛЯ -->
     <div id="screen-profile" class="app-screen">
-        <!-- Новый блок профиля с интеграцией Telegram аватарки -->
         <div class="user-profile-header">
             <img src="https://ibb.co" id="tg-user-avatar" class="user-avatar" alt="User Avatar">
             <div>
@@ -547,6 +546,7 @@
         </div>
     </div>
 
+    <!-- НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
             <span class="nav-icon">📦</span>Кейсы
@@ -569,15 +569,14 @@
     <script>
         // Инициализируем Telegram WebApp API
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем окно на максимум в приложении
+        tg.expand(); 
 
-        // Подгружаем настоящую аватарку и никнейм из Telegram чата
+        // Подгружаем аватарку и никнейм из Telegram чата пользователя
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             if (user.first_name) {
                 document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
             }
-            // Подтягиваем аватарку (если у пользователя скрыты настройки приватности, отобразится дефолтный логотип)
             if (user.photo_url) {
                 document.getElementById('tg-user-avatar').src = user.photo_url;
             } else {
@@ -657,7 +656,7 @@
                 });
             }
         }
-               function showScreen(screenName) {
+        function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
             document.getElementById('screen-deposit').style.display = 'none';
@@ -669,11 +668,10 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
-        // ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ СИСТЕМА УНИКАЛЬНЫХ КРИПТО-КОДОВ
+        // ВЕРИФИКАЦИЯ ОДНОРАЗОВЫХ СЕКРЕТНЫХ КРИПТО-КОДОВ (МАССИВЫ ПОЛНОСТЬЮ ИСПРАВЛЕНЫ)
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
-            // Защитная заглушка для вывода простого сообщения об ошибке
             function triggerPromoError() {
                 showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
             }
@@ -682,7 +680,6 @@
                 triggerPromoError();
                 return;
             }
-            
             if (localStorage.getItem('used_hash_' + rawCode)) {
                 triggerPromoError();
                 return;
@@ -694,26 +691,24 @@
                 return;
             }
 
+            // Получаем корректные элементы массива по индексам (исправленный баг)
             const promoAmount = parseInt(parts[2]);
             const receivedChecksum = parseInt(parts[3]);
             
-            // Вытягиваем ID текущего юзера из Телеграма для сверки
             let currentTgId = 0;
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
                 currentTgId = window.Telegram.WebApp.initDataUnsafe.user.id || 0;
             }
 
-            // Математическая верификация контрольной суммы крипто-ключа
             const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
 
-            if (isNaN(promoAmount) || promoAmount <= 0) {
+            if (isNaN(promoAmount) || promoAmount <= 0 || receivedChecksum !== expectedChecksum) {
                 triggerPromoError();
                 return;
             }
 
-            // Зачисление баланса
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true'); // Делаем код строго одноразовым
+            localStorage.setItem('used_hash_' + rawCode, 'true'); 
             document.getElementById('promo-input-field').value = '';
             saveProgress();
             showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
@@ -817,11 +812,14 @@
         updateUI();
         generateTape();
 
+        // КОНТРОЛЬ ИСЧЕЗНОВЕНИЯ ИГРОВОГО ИНТРО-ЗАСТАВКИ
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const preloader = document.getElementById('preloader');
-                preloader.classList.add('preloader-hidden');
-            }, 2600);
+                if (preloader) {
+                    preloader.classList.add('preloader-hidden');
+                }
+            }, 2600); 
         });
     </script>
 </body>
