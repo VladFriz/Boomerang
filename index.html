@@ -510,7 +510,7 @@
             border: 2px solid #5856d6;
             object-fit: cover;
         }
-        /* Премиальная опасная кнопка полного вайпа прогресса */
+        /* Премиальная Glassmorphic кнопка полного вайпа данных */
         .btn-danger-neon {
             background: rgba(255, 65, 108, 0.08) !important;
             border: 1px solid rgba(255, 65, 108, 0.35) !important;
@@ -536,7 +536,7 @@
             box-shadow: 0 0 20px rgba(255, 65, 108, 0.4) !important;
         }
 
-        /* Эффект полноэкранной вспышки при выбивании Ножа / Калаша */
+        /* Полноэкранный эффект искр для ценного лута */
         .win-explosion-overlay {
             position: fixed;
             top: 0;
@@ -575,7 +575,7 @@
         <div class="logo">Boomerang</div>
         <div class="balance-container">
             <div class="balance">
-                <span style="color:#ffb800;">₽</span>
+                <span style="color:#ffb800;">P</span>
                 <span id="user-balance">0</span>
             </div>
         </div>
@@ -749,7 +749,6 @@
                 osc.stop(ctx.currentTime + 0.06);
             } catch(e) {}
         }
-
         function saveProgress() {
             updateUI();
             if (tg && tg.CloudStorage) {
@@ -766,6 +765,7 @@
                 localStorage.setItem('bm_used_promos', JSON.stringify(gameState.usedPromos));
             }
         }
+
         function loadProgressFromCloud() {
             if (tg && tg.CloudStorage) {
                 tg.CloudStorage.getItems(['bm_balance', 'bm_stats_opened', 'bm_stats_skins', 'bm_inventory', 'bm_used_promos'], (err, res) => {
@@ -789,68 +789,11 @@
                 generateTape();
             }
         }
-
         function sellSkin(uniqueId, price, name) {
             gameState.inventory = gameState.inventory.filter(item => item.id !== uniqueId);
             gameState.balance += price;
             saveProgress();
             showCustomAlert("🤝 Скин продан!", `Вы успешно продали предмет "${name}" за ${price} ₽.`);
-        }
-        function updateUI() {
-            if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
-            if (document.getElementById('stats-opened')) document.getElementById('stats-opened').innerText = gameState.statsOpened;
-            if (document.getElementById('stats-dropped')) document.getElementById('stats-dropped').innerText = gameState.statsSkins;
-
-            const lp = document.getElementById('loot-preview-container');
-            if (lp) {
-                lp.innerHTML = '';
-                casesConfig[gameState.currentCase].loot.forEach((item) => {
-                    const div = document.createElement('div');
-                    if (item.type === 'skin') {
-                        let rarityClass = 'rarity-blue';
-                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
-                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
-                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';
-                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';
-
-                        div.className = `loot-item ${rarityClass}`;
-                        div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
-                    } else {
-                        // Рендерим монету и аккуратный золотой номинал рублей прямо под ней
-                        div.className = 'loot-item rarity-blue';
-                        div.innerHTML = `
-                            <span style="font-size:36px; display:block; margin-bottom:2px;">${item.icon}</span>
-                            <span style="font-size:13px; font-weight:800; color:#ffb800; display:block;">${item.name.replace('P', '₽')}</span>
-                        `;
-                    }
-                    lp.appendChild(div);
-                });
-            }
-
-            const inv = document.getElementById('inventory-container');
-            if (inv) {
-                inv.innerHTML = '';
-                if (gameState.inventory.length === 0) {
-                    inv.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые скины предметов</div>';
-                } else {
-                    gameState.inventory.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'inventory-item';
-                        if (item.isSkin) {
-                            div.innerHTML = `
-                                <img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;" onerror="this.src='skin1.png'">
-                                <div style="font-size:12px; font-weight:700; margin-bottom:4px;">${item.name}</div>
-                                <button class="btn-sell-skin" onclick="sellSkin('${item.id}', ${item.value}, '${item.name}')">Продать за ${item.value}₽</button>
-                            `;
-                        } else {
-                            div.innerHTML = `<div style="font-size:32px; margin-bottom:4px;">${item.icon}</div>`;
-                        }
-                        inv.appendChild(div);
-                    });
-                }
-            }
         }
 
         function showScreen(screenName) {
@@ -885,6 +828,60 @@
             saveProgress();
             showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
         }
+        function updateUI() {
+            if (balanceDisplay) balanceDisplay.innerText = Math.floor(gameState.balance);
+            if (document.getElementById('stats-opened')) document.getElementById('stats-opened').innerText = gameState.statsOpened;
+            if (document.getElementById('stats-dropped')) document.getElementById('stats-dropped').innerText = gameState.statsSkins;
+
+            const lp = document.getElementById('loot-preview-container');
+            if (lp) {
+                lp.innerHTML = '';
+                casesConfig[gameState.currentCase].loot.forEach((item) => {
+                    const div = document.createElement('div');
+                    if (item.type === 'skin') {
+                        let rarityClass = 'rarity-blue';
+                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
+                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
+                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';
+                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';
+                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';
+                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';
+
+                        div.className = `loot-item ${rarityClass}`;
+                        div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
+                    } else {
+                        // Рендерим монету и аккуратный золотой номинал рублей прямо под ней
+                        div.className = 'loot-item rarity-blue';
+                        div.innerHTML = `
+                            <span style="font-size:36px; display:block; margin-bottom:2px;">${item.icon}</span>
+                            <span style="font-size:13px; font-weight:800; color:#ffb800; display:block;">${item.name.replace('P', '₽')}</span>
+                        `;
+                    }
+                    lp.appendChild(div);
+                });
+            }
+
+            const inv = document.getElementById('inventory-container');
+            if (inv) {
+                inv.innerHTML = '';
+                if (!gameState.inventory || gameState.inventory.length === 0) {
+                    inv.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые скины предметов</div>';
+                } else {
+                    gameState.inventory.forEach(item => {
+                        if (!item) return;
+                        const div = document.createElement('div');
+                        div.className = 'inventory-item';
+                        div.innerHTML = `
+                            <img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;" onerror="this.src='skin1.png'">
+                            <div style="font-size:12px; font-weight:700; margin-bottom:4px;">${item.name}</div>
+                            <button class="btn-sell-skin" onclick="sellSkin('${item.id}', ${item.value}, '${item.name}')">Продать за ${item.value}₽</button>
+                        `;
+                        inv.appendChild(div);
+                    });
+                }
+            }
+        }
+
         function switchCase(caseKey) {
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
@@ -898,13 +895,12 @@
             generateTape();
             updateUI();
         }
-
         let balancedPool = [];
         function buildBalancedPool() {
             balancedPool = [];
             casesConfig[gameState.currentCase].loot.forEach(p => {
                 for (let i = 0; i < p.count; i++) {
-                    balancedPool.push({ icon: p.icon, name: p.name, value: p.value, type: p.type });
+                    balancedPool.push({ icon: p.icon, name: p.name, value: p.value, type: p.type.trim() });
                 }
             });
         }
@@ -930,7 +926,15 @@
             }
         }
 
-        // ИСПРАВЛЕНО: Корректный синтаксис массивов для идеального склонения рублей
+        function showCustomAlert(title, message) {
+            document.getElementById('custom-alert-title').innerText = title;
+            document.getElementById('custom-alert-msg').innerText = message;
+            document.getElementById('custom-alert').classList.add('show');
+        }
+
+        function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
+
+        // ИСПРАВЛЕНО: Полный синтаксис массивов для идеального склонения рублей
         function getRublesWord(val) {
             if (val % 10 === 1 && val % 100 !== 11) return "рубль";
             if ([2, 3, 4].includes(val % 10) && ![12, 13, 14].includes(val % 100)) return "рубля";
@@ -945,10 +949,12 @@
             }
             if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
             
+            // Списываем стоимость кейса сразу
             gameState.balance -= sc.price;
             gameState.statsOpened += 1;
             
-            if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
+            // Визуально отображаем списание на экране до анимации
+            if (balanceDisplay) balanceDisplay.innerText = Math.floor(gameState.balance);
             generateTape();
             
             if (tape) { tape.style.transition = 'none'; tape.style.transform = 'translateX(0px)'; }
@@ -988,14 +994,16 @@
                         const wi = tape.children[targetIndex];
                         
                         const pVal = parseInt(wi.getAttribute('data-value'), 10);
-                        const pName = wi.getAttribute('data-name').toString();
-                        const pIcon = wi.getAttribute('data-icon').toString();
-                        const pType = wi.getAttribute('data-type').toString();
+                        const pName = wi.getAttribute('data-name').trim();
+                        const pIcon = wi.getAttribute('data-icon').trim();
+                        const pType = wi.getAttribute('data-type').trim();
 
                         if (pType === 'money') {
+                            // Деньги зачисляются и сохраняются в облако СТРОГО в конце анимации
                             gameState.balance += pVal;
                             showCustomAlert("🎉 Вы выиграли!", `Вы выиграли ${pVal} ${getRublesWord(pVal)}! Сумма зачислена на баланс.`);
                         } else {
+                            // Скины гарантированно зачисляются в инвентарь
                             gameState.statsSkins += 1;
                             const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
                             
@@ -1016,6 +1024,8 @@
 
                             showCustomAlert("🎉 Вы выиграли!", `Отличный дроп! Скин "${pName}" добавлен в твой инвентарь.`);
                         }
+                        
+                        // Сохраняем состояние только здесь — после финала анимации!
                         saveProgress();
                     } catch (error) {
                         console.error("Ошибка финала рулетки:", error);
@@ -1024,6 +1034,18 @@
                     }
                 }, 4800);
             }, 50);
+        }
+
+        function resetAllDataData() {
+            if (tg && tg.CloudStorage) {
+                tg.CloudStorage.removeItem('bm_balance');
+                tg.CloudStorage.removeItem('bm_stats_opened');
+                tg.CloudStorage.removeItem('bm_stats_skins');
+                tg.CloudStorage.setItem('bm_inventory', '[]');
+                tg.CloudStorage.setItem('bm_used_promos', '[]');
+            }
+            localStorage.clear();
+            location.reload();
         }
 
         loadProgressFromCloud();
