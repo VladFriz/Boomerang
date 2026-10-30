@@ -67,7 +67,7 @@
             text-shadow: 0 0 8px #ffb800;
         }
 
-        /* Сетка разделов и карточки кейсов */
+        /* Сетка разделов */
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -91,7 +91,6 @@
             border: 1px solid #1f2142;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             text-align: center;
             padding-bottom: 15px;
@@ -121,7 +120,7 @@
             font-weight: 700;
         }
 
-        /* Окно активной рулетки */
+        /* Рулетка */
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -210,11 +209,80 @@
             100% { box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4); }
         }
 
+        /* Кастомное модальное окно уведомления */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 12, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-alert-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .custom-alert-box {
+            background: #181931;
+            border: 2px solid #322f75;
+            border-radius: 24px;
+            padding: 30px 24px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(88, 86, 214, 0.3);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .custom-alert-overlay.show .custom-alert-box {
+            transform: scale(1);
+        }
+
+        .custom-alert-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffb800;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
+        }
+
+        .custom-alert-message {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .custom-alert-btn {
+            background: linear-gradient(135deg, #5856d6 0%, #403ebd 100%);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(88, 86, 214, 0.4);
+            width: 100%;
+        }
+
         /* Список лута */
         .loot-preview-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
             padding: 0 15px;
         }
 
@@ -226,8 +294,8 @@
             border: 1px solid #1c1d3a;
         }
 
-        .loot-icon { font-size: 28px; margin-bottom: 4px; display: block; }
-        .loot-name { font-size: 11px; color: #b3b6db; font-weight: 700; }
+        .loot-icon { font-size: 24px; margin-bottom: 4px; display: block; }
+        .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -246,9 +314,9 @@
     <!-- РАЗДЕЛЫ КЕЙСОВ -->
     <div class="section-title">Доступные кейсы</div>
     <div class="cases-category-grid">
-        <!-- Первый кейс с вашей уникальной картинкой -->
+        <!-- Относительный путь гарантирует отображение картинки -->
         <div class="case-card active">
-            <img src="https://githubusercontent.com" onerror="this.src='https://ibb.co'" alt="Бомж Кейс">
+            <img src="image.png" onerror="this.src='https://ibb.co'" alt="Бомж Кейс">
             <div class="case-card-title">Бомж Кейс</div>
             <div class="case-card-price">Бесплатно</div>
         </div>
@@ -278,9 +346,16 @@
         <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">5 ₽ (0.4%)</div></div>
         <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">10 ₽ (0.1%)</div></div>
     </div>
+
+    <!-- Новое кастомное уведомление -->
+    <div class="custom-alert-overlay" id="custom-alert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-title">🎉 Поздравляем!</div>
+            <div class="custom-alert-message" id="custom-alert-msg">Вы выиграли!</div>
+            <button class="custom-alert-btn" onclick="closeAlert()">Отлично</button>
+        </div>
+    </div>
     <script>
-        // Математически точный пул призов для генерации ленты (всего 1000 элементов)
-        // 1 рубль - 98% (980 шт), 2 рубля - 1% (10 шт), 3 рубля - 0.5% (5 шт), 5 рублей - 0.4% (4 шт), 10 рублей - 0.1% (1 шт)
         const prizeConfig = [
             { icon: '🪙', name: '1 ₽', value: 1, count: 980 },
             { icon: '🪙', name: '2 ₽', value: 2, count: 10 },
@@ -289,7 +364,6 @@
             { icon: '🪙', name: '10 ₽', value: 10, count: 1 }
         ];
 
-        // Создаем плоский массив на 1000 элементов на основе весов
         let balancedPool = [];
         prizeConfig.forEach(p => {
             for(let i = 0; i < p.count; i++) {
@@ -304,9 +378,7 @@
 
         function generateTape() {
             tape.innerHTML = '';
-            // Генерируем длинную ленту прокрутки
             for (let i = 0; i < 55; i++) {
-                // Извлекаем абсолютно случайный элемент с учетом заложенных вероятностей
                 const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
@@ -318,6 +390,15 @@
 
         generateTape();
 
+        function showAlert(message) {
+            document.getElementById('custom-alert-msg').innerText = message;
+            document.getElementById('custom-alert').classList.add('show');
+        }
+
+        function closeAlert() {
+            document.getElementById('custom-alert').classList.remove('show');
+        }
+
         function startSpin() {
             spinBtn.disabled = true;
             spinBtn.style.animation = 'none';
@@ -328,7 +409,7 @@
             tape.style.transform = 'translateX(0px)';
             
             setTimeout(() => {
-                const targetIndex = 38; // Индекс победного элемента
+                const targetIndex = 38; 
                 const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
                 const randomShift = Math.floor(Math.random() * 40) - 20; 
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
@@ -343,7 +424,8 @@
                     let currentBalance = parseInt(balanceDisplay.innerText);
                     balanceDisplay.innerText = currentBalance + prizeValue;
                     
-                    alert(`Выигрыш: +${prizeValue} ₽ зачислено на баланс!`);
+                    // Показываем красивое внутреннее окно без упоминания ссылок гитхаба
+                    showAlert(`Твой выигрыш составил +${prizeValue} ₽! Деньги успешно зачислены на игровой баланс.`);
                     
                     spinBtn.disabled = false;
                     spinBtn.style.opacity = '1';
