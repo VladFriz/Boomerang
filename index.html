@@ -22,6 +22,50 @@
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
 
+        /* ПРОФЕССИОНАЛЬНЫЙ ИГРОВОЙ ЭКРАН ЗАГРУЗКИ */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #05060b;
+            background: radial-gradient(circle at 50% 50%, #0f0c24 0%, #040408 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+        }
+
+        .preloader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Эффект пульсирующего неонового текста с радужным переливом */
+        .neon-loader-text {
+            font-size: 38px;
+            font-weight: 950;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ffb800, #ff007f, #5856d6, #ffb800);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 3s linear infinite, pulseGlow 1.5s infinite ease-in-out;
+            filter: drop-shadow(0 0 12px rgba(88, 86, 214, 0.8)) drop-shadow(0 0 30px rgba(255, 184, 0, 0.4));
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(88, 86, 214, 0.6)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(255, 184, 0, 0.9)); }
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -42,7 +86,6 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
-
         .balance-container {
             display: flex;
             align-items: center;
@@ -73,6 +116,7 @@
         .app-screen.active-screen {
             display: block;
         }
+
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -124,7 +168,6 @@
             color: #ffb800;
             font-weight: 700;
         }
-
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -159,6 +202,7 @@
             font-size: 14px;
             cursor: pointer;
         }
+
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -379,6 +423,11 @@
 </head>
 <body>
 
+    <!-- КРУТОЙ НЕОНОВЫЙ ИГРОВОЙ ЭКРАН ЗАГРУЗКИ -->
+    <div id="preloader">
+        <div class="neon-loader-text">BOOMERANG</div>
+    </div>
+
     <div class="header">
         <div class="logo">Boomerang</div>
         <div class="balance-container">
@@ -428,7 +477,7 @@
             <button class="promo-btn" onclick="activateAdminPromo()">Активировать код</button>
         </div>
         <div class="section-title" style="font-size:14px; color:#8f8daf; border:none; text-align:center;">
-            Коды выдаются создателем проекта и доверенными администраторами in боте.
+            Коды выдаются создателем проекта и доверенными администраторами в боте.
         </div>
     </div>
 
@@ -547,14 +596,14 @@
             }
         }
         function showScreen(screenName) {
-            document.querySelectorAll('.app-screen').forEach(function(s) {
-                s.classList.remove('active-screen');
-            });
-            document.querySelectorAll('.nav-item').forEach(function(b) {
-                b.classList.remove('active');
-            });
+            document.getElementById('screen-cases').style.display = 'none';
+            document.getElementById('screen-profile').style.display = 'none';
+            document.getElementById('screen-deposit').style.display = 'none';
+            document.getElementById('nav-btn-cases').classList.remove('active');
+            document.getElementById('nav-btn-profile').classList.remove('active');
+            document.getElementById('nav-btn-deposit').classList.remove('active');
             
-            document.getElementById('screen-' + screenName).classList.add('active-screen');
+            document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
@@ -573,7 +622,7 @@
                 showAlert("❌ Неверный код!");
                 return;
             }
-            const promoAmount = parseInt(parts[2]);
+            const promoAmount = parseInt(parts);
             if (isNaN(promoAmount) || promoAmount <= 0) {
                 showAlert("❌ Ошибка чтения суммы.");
                 return;
@@ -682,7 +731,14 @@
 
         updateUI();
         generateTape();
-        showScreen('cases');
+
+        // КОНТРОЛЬ НЕОНОВОГО ПРЕЛОАДЕРА ПРИ СТАРТЕ СТРАНИЦЫ
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                preloader.classList.add('preloader-hidden');
+            }, 2600); // Интро красиво пульсирует и плавно уходит через 2.6 секунды
+        });
     </script>
 </body>
 </html>
