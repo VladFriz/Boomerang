@@ -36,7 +36,6 @@
             top: 0;
             z-index: 100;
         }
-
         .logo {
             font-size: 24px;
             font-weight: 900;
@@ -44,6 +43,7 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
+
         .balance-container {
             display: flex;
             align-items: center;
@@ -84,7 +84,6 @@
             padding: 0 15px;
             margin-bottom: 25px;
         }
-
         .case-card {
             background: rgba(24, 25, 49, 0.6);
             border-radius: 20px;
@@ -117,6 +116,7 @@
             color: #ffb800;
             font-weight: 700;
         }
+
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -149,7 +149,6 @@
             font-weight: 800;
             cursor: pointer;
         }
-
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -219,6 +218,7 @@
             font-size: 36px;
             margin-bottom: 6px;
         }
+
         .btn-open-case {
             background: linear-gradient(135deg, #ffb800 0%, #ff9000 100%);
             color: #07080f;
@@ -229,7 +229,6 @@
             font-size: 17px;
             cursor: pointer;
         }
-
         .profile-container {
             padding: 15px;
         }
@@ -353,7 +352,7 @@
             padding: 30px 24px; width: 85%; max-width: 340px; text-align: center;
             transform: scale(0.8); transition: transform 0.2s ease;
         }
-        .custom-alert-overlay.show { opacity: 1; pointer-events: auto; }
+        .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
         .custom-alert-title { font-size: 22px; font-weight: 900; color: #ffb800; margin-bottom: 12px; }
         .custom-alert-message { font-size: 16px; color: #ffffff; margin-bottom: 24px; }
         .custom-alert-btn {
@@ -499,17 +498,17 @@
 
         try {
             if (tg?.initDataUnsafe?.user) {
-                const u = tg.initDataUnsafe.user;
-                if (u.first_name) {
-                    document.getElementById('tg-user-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+                const user = tg.initDataUnsafe.user;
+                if (user.first_name) {
+                    document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                 }
-                if (u.photo_url) {
-                    document.getElementById('tg-user-avatar').src = u.photo_url;
+                if (user.photo_url) {
+                    document.getElementById('tg-user-avatar').src = user.photo_url;
                 }
             }
         } catch (e) {}
 
-        // ЗДЕСЬ СТОЯТ ПРАВИЛЬНЫЕ НАЗВАНИЯ ТВОИХ ФОТО-СКИНОВ ИЗ РЕПОЗИТОРИЯ GITHUB
+        // ЗДЕСЬ СТОЯТ НАСТОЯЩИЕ НАЗВАНИЯ ТВОИХ ФОТО-СКИНОВ ИЗ РЕПОЗИТОРИЯ GITHUB
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс", price: 0, loot: [
@@ -592,7 +591,6 @@
                 }
             }
         }
-
         function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
@@ -605,16 +603,35 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
+        // ВЫВЕРЕННЫЙ ИСПРАВЛЕННЫЙ ОДНОРАЗОВЫЙ ПАРСЕР ПРОМОКОДОВ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
-            function triggerPromoError() { showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно."); }
-            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) { triggerPromoError(); return; }
+            
+            function triggerPromoError() {
+                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+            }
+
+            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) {
+                triggerPromoError();
+                return;
+            }
+
             const parts = rawCode.split('-');
-            if (parts.length < 4) { triggerPromoError(); return; }
+            if (parts.length < 4) { 
+                triggerPromoError(); 
+                return; 
+            }
+
+            // Извлекаем сумму строго со 3-го индекса массива строк
             const promoAmount = parseInt(parts, 10);
-            if (isNaN(promoAmount) || promoAmount <= 0) { triggerPromoError(); return; }
+
+            if (isNaN(promoAmount) || promoAmount <= 0) {
+                triggerPromoError();
+                return;
+            }
+
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true');
+            localStorage.setItem('used_hash_' + rawCode, 'true'); // Код сгорает
             document.getElementById('promo-input-field').value = '';
             saveProgress();
             showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
@@ -681,36 +698,44 @@
             setTimeout(() => {
                 const targetIndex = 38;
                 const wrapperWidth = document.querySelector('.roulette-wrapper')?.offsetWidth || 300;
-const randomShift = Math.floor(Math.random() * 40) - 20;
-const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
-if (tape) {
-tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
-tape.style.transform = 'translateX(' + targetPosition + 'px)';
-}
-setTimeout(() => {
-if (!tape) return;
-const wi = tape.children[targetIndex];
-const pVal = parseInt(wi.getAttribute('data-value'), 10);
-const pName = wi.getAttribute('data-name');
-const pIcon = wi.getAttribute('data-icon');
-const pType = wi.getAttribute('data-type');
-if (pType === 'money') {
-gameState.balance += pVal;
-showAlert('Выигрыш: +' + pVal + ' ₽ зачислено на баланс!');
-} else {
-gameState.statsSkins += 1;
-gameState.inventory.push({ icon: pIcon, name: pName, isSkin: true });
-showAlert('Отличный дроп! Предмет "' + pName + '" отправлен в инвентарь!');
-}
-saveProgress();
-if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
-}, 4800);
-}, 50);
-}
-function resetAllDataData() {
-localStorage.clear();
-location.reload();
-}
-updateUI();
-generateTape();
-showScreen('cases');
+                const randomShift = Math.floor(Math.random() * 40) - 20;
+                const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
+                
+                if (tape) {
+                    tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
+                    tape.style.transform = 'translateX(' + targetPosition + 'px)';
+                }
+                
+                setTimeout(() => {
+                    if (!tape) return;
+                    const wi = tape.children[targetIndex];
+                    const pVal = parseInt(wi.getAttribute('data-value'), 10);
+                    const pName = wi.getAttribute('data-name');
+                    const pIcon = wi.getAttribute('data-icon');
+                    const pType = wi.getAttribute('data-type');
+                    
+                    if (pType === 'money') {
+                        gameState.balance += pVal;
+                        showAlert('Выигрыш: +' + pVal + ' ₽ зачислено на баланс!');
+                    } else {
+                        gameState.statsSkins += 1;
+                        gameState.inventory.push({ icon: pIcon, name: pName, isSkin: true });
+                        showAlert('Отличный дроп! Предмет "' + pName + '" отправлен в инвентарь!');
+                    }
+                    saveProgress();
+                    if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
+                }, 4800);
+            }, 50);
+        }
+
+        function resetAllDataData() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        updateUI();
+        generateTape();
+        showScreen('cases');
+    </script>
+</body>
+</html>
