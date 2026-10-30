@@ -575,7 +575,7 @@
         <div class="logo">Boomerang</div>
         <div class="balance-container">
             <div class="balance">
-                <span style="color:#ffb800;">P</span>
+                <span style="color:#ffb800;">₽</span>
                 <span id="user-balance">0</span>
             </div>
         </div>
@@ -694,28 +694,29 @@
             }
         } catch(e) {}
 
+        // НАСТРОЕНО: Настоящие официальные имена из CS и веса шансов (Курица — ширпотреб 50₽, Нож — раритет 2500₽)
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс",
                 price: 0,
                 loot: [
-                    { icon: '🪙', name: '1 P', value: 1, type: 'money', count: 900 },
-                    { icon: '🪙', name: '2 P', value: 2, type: 'money', count: 100 },
-                    { icon: '🪙', name: '3 P', value: 3, type: 'money', count: 5 },
-                    { icon: '🪙', name: '5 P', value: 5, type: 'money', count: 4 },
-                    { icon: '🪙', name: '10 P', value: 10, type: 'money', count: 1 }
+                    { icon: '🪙', name: '1 ₽', value: 1, type: 'money', count: 700 },
+                    { icon: '🪙', name: '2 ₽', value: 2, type: 'money', count: 200 },
+                    { icon: '🪙', name: '3 ₽', value: 3, type: 'money', count: 70 },
+                    { icon: '🪙', name: '5 ₽', value: 5, type: 'money', count: 25 },
+                    { icon: '🪙', name: '10 ₽', value: 10, type: 'money', count: 5 }
                 ]
             },
             epic: {
                 name: "Epic Zone",
                 price: 100,
                 loot: [
-                    { icon: 'skin1.png', name: 'UMP-45', value: 250, type: 'skin', count: 50 },
-                    { icon: 'skin2.png', name: 'P90', value: 150, type: 'skin', count: 40 },
-                    { icon: 'skin3.png', name: 'AUG', value: 100, type: 'skin', count: 30 },
-                    { icon: 'skin4.png', name: 'Чарм Курица', value: 500, type: 'skin', count: 15 },
-                    { icon: 'skin5.png', name: 'AK-47', value: 1500, type: 'skin', count: 5 },
-                    { icon: 'skin6.png', name: 'Нож-скелет', value: 2500, type: 'skin', count: 1 }
+                    { icon: 'skin4.png', name: 'Charm | Chicken', value: 50, type: 'skin', count: 450 },
+                    { icon: 'skin3.png', name: 'AUG | Stymphalian', value: 100, type: 'skin', count: 250 },
+                    { icon: 'skin2.png', name: 'P90 | Scarab Rush', value: 150, type: 'skin', count: 180 },
+                    { icon: 'skin1.png', name: 'UMP-45 | K.O. Factory', value: 250, type: 'skin', count: 90 },
+                    { icon: 'skin5.png', name: 'AK-47 | Searing Rage', value: 1500, type: 'skin', count: 25 },
+                    { icon: 'skin6.png', name: '★ Skeleton Knife | Tiger Tooth', value: 2500, type: 'skin', count: 5 }
                 ]
             }
         };
@@ -839,18 +840,14 @@
                 casesConfig[gameState.currentCase].loot.forEach((item) => {
                     const div = document.createElement('div');
                     if (item.type === 'skin') {
-                        let rarityClass = 'rarity-blue';
+                        let rarityClass = 'rarity-purple'; // По умолчанию фиолетовые пушки
                         if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
                         else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
-                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';
-                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';
+                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-blue'; // НАСТРОЕНО: Чарм подсвечивается синим (ширпотреб)
 
                         div.className = `loot-item ${rarityClass}`;
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
                     } else {
-                        // Рендерим монету и аккуратный золотой номинал рублей прямо под ней
                         div.className = 'loot-item rarity-blue';
                         div.innerHTML = `
                             <span style="font-size:36px; display:block; margin-bottom:2px;">${item.icon}</span>
@@ -905,6 +902,7 @@
             });
         }
 
+        // НАСТРОЕНО: На крутящуюся ленту бесплатного кейса выводится номинал рублей под монеткой!
         function generateTape() {
             buildBalancedPool();
             if (!tape) return;
@@ -916,7 +914,10 @@
                 if (r.type === 'skin') {
                     item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='skin1.png'">`;
                 } else {
-                    item.innerHTML = `<div class="item-emoji" style="font-size:30px;">${r.icon}</div>`;
+                    item.innerHTML = `
+                        <div class="item-emoji" style="font-size:26px; line-height: 1;">${r.icon}</div>
+                        <div style="font-size:11px; font-weight:800; color:#ffb800; margin-top:2px;">${r.name}</div>
+                    `;
                 }
                 item.setAttribute('data-value', r.value);
                 item.setAttribute('data-name', r.name);
@@ -934,7 +935,6 @@
 
         function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
 
-        // ИСПРАВЛЕНО: Полный синтаксис массивов для идеального склонения рублей
         function getRublesWord(val) {
             if (val % 10 === 1 && val % 100 !== 11) return "рубль";
             if ([2, 3, 4].includes(val % 10) && ![12, 13, 14].includes(val % 100)) return "рубля";
@@ -949,11 +949,9 @@
             }
             if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
             
-            // Списываем стоимость кейса сразу
             gameState.balance -= sc.price;
             gameState.statsOpened += 1;
             
-            // Визуально отображаем списание на экране до анимации
             if (balanceDisplay) balanceDisplay.innerText = Math.floor(gameState.balance);
             generateTape();
             
@@ -999,11 +997,9 @@
                         const pType = wi.getAttribute('data-type').trim();
 
                         if (pType === 'money') {
-                            // Деньги зачисляются и сохраняются в облако СТРОГО в конце анимации
                             gameState.balance += pVal;
                             showCustomAlert("🎉 Вы выиграли!", `Вы выиграли ${pVal} ${getRublesWord(pVal)}! Сумма зачислена на баланс.`);
                         } else {
-                            // Скины гарантированно зачисляются в инвентарь
                             gameState.statsSkins += 1;
                             const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
                             
@@ -1025,7 +1021,6 @@
                             showCustomAlert("🎉 Вы выиграли!", `Отличный дроп! Скин "${pName}" добавлен в твой инвентарь.`);
                         }
                         
-                        // Сохраняем состояние только здесь — после финала анимации!
                         saveProgress();
                     } catch (error) {
                         console.error("Ошибка финала рулетки:", error);
@@ -1034,18 +1029,6 @@
                     }
                 }, 4800);
             }, 50);
-        }
-
-        function resetAllDataData() {
-            if (tg && tg.CloudStorage) {
-                tg.CloudStorage.removeItem('bm_balance');
-                tg.CloudStorage.removeItem('bm_stats_opened');
-                tg.CloudStorage.removeItem('bm_stats_skins');
-                tg.CloudStorage.setItem('bm_inventory', '[]');
-                tg.CloudStorage.setItem('bm_used_promos', '[]');
-            }
-            localStorage.clear();
-            location.reload();
         }
 
         loadProgressFromCloud();
