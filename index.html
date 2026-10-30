@@ -24,7 +24,7 @@
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
             transition: background 0.8s ease;
         }
-        /* Премиальные динамические бэкграунды под разные кейсы */
+        /* Премиальные динамические бэкграунды под атмосферу каждого кейса */
         body.case-chill {
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
@@ -510,7 +510,7 @@
             border: 2px solid #5856d6;
             object-fit: cover;
         }
-        /* Неоновая кнопка полного сброса всего прогресса игры */
+        /* Премиальная опасная кнопка полного вайпа прогресса */
         .btn-danger-neon {
             background: rgba(255, 65, 108, 0.08) !important;
             border: 1px solid rgba(255, 65, 108, 0.35) !important;
@@ -536,7 +536,7 @@
             box-shadow: 0 0 20px rgba(255, 65, 108, 0.4) !important;
         }
 
-        /* Полноэкранный эффект искр для ценного лута */
+        /* Эффект полноэкранной вспышки при выбивании Ножа / Калаша */
         .win-explosion-overlay {
             position: fixed;
             top: 0;
@@ -568,7 +568,7 @@
 </head>
 <body class="case-chill">
 
-    <!-- ФИКС: Слой для вспышек объявлен сразу под body, убирая любые зависания кнопок рулетки -->
+    <!-- Слой для неоновых вспышек выигрыша ножей/калашей -->
     <div id="win-explosion" class="win-explosion-overlay"></div>
 
     <div class="header">
@@ -818,17 +818,17 @@
                         div.className = `loot-item ${rarityClass}`;
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
                     } else {
-                        // ФИКС: Рендерим монету и аккуратный золотой номинал рублей прямо под ней
+                        // Рендерим монету и аккуратный золотой номинал рублей прямо под ней
                         div.className = 'loot-item rarity-blue';
                         div.innerHTML = `
-                            <span style="font-size:34px; display:block; margin-bottom:2px;">${item.icon}</span>
+                            <span style="font-size:36px; display:block; margin-bottom:2px;">${item.icon}</span>
                             <span style="font-size:13px; font-weight:800; color:#ffb800; display:block;">${item.name.replace('P', '₽')}</span>
                         `;
                     }
                     lp.appendChild(div);
                 });
             }
-            
+
             const inv = document.getElementById('inventory-container');
             if (inv) {
                 inv.innerHTML = '';
@@ -839,7 +839,6 @@
                         const div = document.createElement('div');
                         div.className = 'inventory-item';
                         if (item.isSkin) {
-                            // Жестко выводим именно ту картинку и то имя, которые были записаны при выигрыше
                             div.innerHTML = `
                                 <img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;" onerror="this.src='skin1.png'">
                                 <div style="font-size:12px; font-weight:700; margin-bottom:4px;">${item.name}</div>
@@ -852,7 +851,7 @@
                     });
                 }
             }
-
+        }
 
         function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
@@ -886,7 +885,7 @@
             saveProgress();
             showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
         }
-                        function switchCase(caseKey) {
+        function switchCase(caseKey) {
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
             
@@ -931,7 +930,7 @@
             }
         }
 
-        // Функция для красивого склонения рублей в уведомлении
+        // ИСПРАВЛЕНО: Корректный синтаксис массивов для идеального склонения рублей
         function getRublesWord(val) {
             if (val % 10 === 1 && val % 100 !== 11) return "рубль";
             if ([2, 3, 4].includes(val % 10) && ![12, 13, 14].includes(val % 100)) return "рубля";
@@ -946,11 +945,9 @@
             }
             if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
             
-            // Списываем только цену кейса (для бесплатного спишется 0)
             gameState.balance -= sc.price;
             gameState.statsOpened += 1;
             
-            // ВАЖНО: Обновляем только текст баланса на экране, НЕ сохраняя выигрыш досрочно
             if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
             generateTape();
             
@@ -990,21 +987,18 @@
                         if (!tape || !tape.children[targetIndex]) return;
                         const wi = tape.children[targetIndex];
                         
-                        // Жестко фиксируем переменные выигрыша прямо из дата-атрибутов конкретной карточки
                         const pVal = parseInt(wi.getAttribute('data-value'), 10);
                         const pName = wi.getAttribute('data-name').toString();
                         const pIcon = wi.getAttribute('data-icon').toString();
                         const pType = wi.getAttribute('data-type').toString();
 
                         if (pType === 'money') {
-                            // Начисление денег на баланс происходит СТРОГО в момент остановки рулетки
                             gameState.balance += pVal;
                             showCustomAlert("🎉 Вы выиграли!", `Вы выиграли ${pVal} ${getRublesWord(pVal)}! Сумма зачислена на баланс.`);
                         } else {
                             gameState.statsSkins += 1;
                             const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
                             
-                            // Сохраняем в инвентарь уникальную пару: свой ID, свою иконку и свое имя
                             gameState.inventory.push({ 
                                 id: uniqueId, 
                                 icon: pIcon, 
