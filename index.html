@@ -18,7 +18,7 @@
         body {
             background-color: #0b0c16;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding-bottom: 90px;
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
@@ -44,7 +44,6 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
-
         .balance-container {
             display: flex;
             align-items: center;
@@ -60,12 +59,6 @@
             align-items: center;
             gap: 6px;
             border: 1px solid #2e3163;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-        }
-        
-        .balance-icon {
-            color: #ffb800;
-            text-shadow: 0 0 8px #ffb800;
         }
 
         .app-screen {
@@ -75,11 +68,11 @@
         .app-screen.active-screen {
             display: block;
         }
+
         .section-title {
             font-size: 22px;
             font-weight: 800;
             margin: 25px 15px 15px 15px;
-            letter-spacing: 0.5px;
             border-left: 4px solid #5856d6;
             padding-left: 10px;
         }
@@ -98,14 +91,12 @@
             border: 1px solid #1f2142;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             text-align: center;
             padding-bottom: 15px;
         }
 
         .case-card.active {
             border-color: #ffb800;
-            box-shadow: 0 0 15px rgba(255, 184, 0, 0.2);
         }
 
         .case-card img {
@@ -144,7 +135,6 @@
             padding: 12px;
             color: white;
             font-weight: 700;
-            font-size: 14px;
             text-align: center;
             margin-bottom: 12px;
             outline: none;
@@ -158,7 +148,6 @@
             padding: 12px;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 14px;
             cursor: pointer;
         }
 
@@ -180,7 +169,6 @@
             margin: 15px 0 20px 0;
             overflow: hidden;
             border: 1px solid #1c1d3a;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .roulette-wrapper::before {
@@ -193,7 +181,6 @@
             height: 100%;
             background: #ffb800;
             z-index: 10;
-            box-shadow: 0 0 12px #ffb800;
         }
 
         .roulette-tape {
@@ -240,46 +227,10 @@
             font-weight: 900;
             font-size: 17px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4);
-        }
-
-        .user-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(24, 25, 49, 0.5);
-            border: 1px solid #1f2142;
-            padding: 15px;
-            border-radius: 20px;
-            margin: 15px;
-        }
-
-        .user-avatar {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 2px solid #5856d6;
-            box-shadow: 0 0 15px rgba(88, 86, 214, 0.4);
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: #ffb800;
-            font-weight: 700;
-            margin-top: 2px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .profile-container {
-            padding: 5px 15px;
+            padding: 15px;
         }
 
         .stats-grid {
@@ -321,7 +272,6 @@
             border-radius: 16px;
             padding: 15px 5px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .inventory-empty {
@@ -329,7 +279,6 @@
             text-align: center;
             color: #636594;
             padding: 40px 0;
-            font-weight: 600;
             font-size: 14px;
         }
 
@@ -375,7 +324,6 @@
 
         .nav-item.active .nav-icon {
             color: #5856d6;
-            filter: drop-shadow(0 0 8px #5856d6);
         }
 
         .custom-alert-overlay {
@@ -399,11 +347,11 @@
         .custom-alert-box {
             background: #181931; border: 2px solid #322f75; border-radius: 24px;
             padding: 30px 24px; width: 85%; max-width: 340px; text-align: center;
-            box-shadow: 0 10px 30px rgba(88, 86, 214, 0.3); transform: scale(0.8); transition: transform 0.2s ease;
+            transform: scale(0.8); transition: transform 0.2s ease;
         }
         .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
         .custom-alert-title { font-size: 22px; font-weight: 900; color: #ffb800; margin-bottom: 12px; }
-        .custom-alert-message { font-size: 16px; color: #ffffff; font-weight: 600; margin-bottom: 24px; }
+        .custom-alert-message { font-size: 16px; color: #ffffff; margin-bottom: 24px; }
         .custom-alert-btn {
             background: linear-gradient(135deg, #5856d6 0%, #403ebd 100%);
             color: white; border: none; padding: 12px 35px; border-radius: 14px; font-weight: 800; width: 100%;
@@ -412,18 +360,16 @@
         .loot-preview-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 15px; }
         .loot-item { background: rgba(24, 25, 49, 0.4); border-radius: 14px; padding: 12px 5px; text-align: center; border: 1px solid #1c1d3a; }
         .loot-icon { font-size: 22px; margin-bottom: 4px; display: block; }
-        .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
+        .loot-item .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
     </style>
 </head>
 <body>
-
-    <!-- ЗДЕСЬ БОЛЬШЕ НЕТ ПРЕЛОАДЕРА — ВСЁ ОТКРЫВАЕТСЯ СРАЗУ -->
 
     <div class="header">
         <div class="logo">Boomerang</div>
         <div class="balance-container">
             <div class="balance">
-                <span class="balance-icon">₽</span>
+                <span style="color:#ffb800;">₽</span>
                 <span id="user-balance">0</span>
             </div>
         </div>
@@ -456,8 +402,7 @@
         </div>
 
         <div class="section-title">Содержимое кейса</div>
-        <div class="loot-preview-grid" id="loot-preview-container">
-        </div>
+        <div class="loot-preview-grid" id="loot-preview-container"></div>
     </div>
 
     <!-- ЭКРАН ТОПЛИВА -->
@@ -476,7 +421,7 @@
     <!-- ЭКРАН ПРОФИЛЯ -->
     <div id="screen-profile" class="app-screen">
         <div class="user-profile-header">
-            <img src="https://icons8.com" id="tg-user-avatar" class="user-avatar" alt="User Avatar">
+            <img src="https://icons8.com" id="tg-user-avatar" class="user-avatar" alt="Avatar">
             <div>
                 <div class="user-name" id="tg-user-name">Игрок Boomerang</div>
                 <div class="user-role">Пользователь</div>
@@ -523,32 +468,24 @@
         </div>
     </div>
     <script>
-        // Запуск Telegram API с проверкой ошибок
-        const tg = window.Telegram.WebApp;
-        if (tg && typeof tg.expand === 'function') {
-            tg.expand();
-        }
+        const tg = window.Telegram?.WebApp;
+        if (tg) { tg.expand(); }
 
-        // Защищенное получение данных профиля
         try {
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const user = tg.initDataUnsafe.user;
-                if (user.first_name) {
-                    document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+            if (tg?.initDataUnsafe?.user) {
+                const u = tg.initDataUnsafe.user;
+                if (u.first_name) {
+                    document.getElementById('tg-user-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
                 }
-                if (user.photo_url) {
-                    document.getElementById('tg-user-avatar').src = user.photo_url;
+                if (u.photo_url) {
+                    document.getElementById('tg-user-avatar').src = u.photo_url;
                 }
             }
-        } catch (e) {
-            console.log("Telegram API не передал аватарку:", e);
-        }
+        } catch (e) {}
 
         const casesConfig = {
             chill: {
-                name: "Бомж Кейс",
-                price: 0,
-                loot: [
+                name: "Бомж Кейс", price: 0, loot: [
                     { icon: '🪙', name: '1 ₽', value: 1, type: 'money', count: 980 },
                     { icon: '🪙', name: '2 ₽', value: 2, type: 'money', count: 10 },
                     { icon: '🪙', name: '3 ₽', value: 3, type: 'money', count: 5 },
@@ -557,9 +494,7 @@
                 ]
             },
             epic: {
-                name: "Epic Zone",
-                price: 100,
-                loot: [
+                name: "Epic Zone", price: 100, loot: [
                     { icon: '🧸', name: 'Мишка', value: 24, type: 'skin', count: 400 },
                     { icon: '💝', name: 'Сердечко', value: 24, type: 'skin', count: 350 },
                     { icon: '🌹', name: 'Роза', value: 40, type: 'skin', count: 200 },
@@ -591,33 +526,31 @@
 
         function updateUI() {
             if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
-            const openedEl = document.getElementById('stat-opened');
-            const skinsEl = document.getElementById('stat-skins');
-            if (openedEl) openedEl.innerText = gameState.statsOpened;
-            if (skinsEl) skinsEl.innerText = gameState.statsSkins;
+            if (document.getElementById('stat-opened')) document.getElementById('stat-opened').innerText = gameState.statsOpened;
+            if (document.getElementById('stat-skins')) document.getElementById('stat-skins').innerText = gameState.statsSkins;
             
-            const lootPreview = document.getElementById('loot-preview-container');
-            if (lootPreview) {
-                lootPreview.innerHTML = '';
+            const lp = document.getElementById('loot-preview-container');
+            if (lp) {
+                lp.innerHTML = '';
                 casesConfig[gameState.currentCase].loot.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'loot-item';
                     div.innerHTML = '<span class="loot-icon">' + item.icon + '</span><div class="loot-name">' + item.name + '</div>';
-                    lootPreview.appendChild(div);
+                    lp.appendChild(div);
                 });
             }
 
-            const invContainer = document.getElementById('inventory-container');
-            if (invContainer) {
-                invContainer.innerHTML = '';
+            const inv = document.getElementById('inventory-container');
+            if (inv) {
+                inv.innerHTML = '';
                 if (gameState.inventory.length === 0) {
-                    invContainer.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>';
+                    inv.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>';
                 } else {
                     gameState.inventory.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'inventory-item';
                         div.innerHTML = '<div style="font-size:32px; margin-bottom:4px;">' + item.icon + '</div><div style="font-size:12px; font-weight:700;">' + item.name + '</div>';
-                        invContainer.appendChild(div);
+                        inv.appendChild(div);
                     });
                 }
             }
@@ -636,44 +569,32 @@
 
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
-            
-            function triggerPromoError() {
+            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) {
                 showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
-            }
-
-            if (!rawCode.startsWith("BOOM-")) { triggerPromoError(); return; }
-            if (localStorage.getItem('used_hash_' + rawCode)) { triggerPromoError(); return; }
-
-            const parts = rawCode.split('-');
-            if (parts.length < 4) { triggerPromoError(); return; }
-
-            const promoAmount = parseInt(parts[2], 10);
-            const receivedChecksum = parseInt(parts[3], 10);
-            
-            let currentTgId = 0;
-            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                currentTgId = tg.initDataUnsafe.user.id || 0;
-            }
-
-            const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
-
-            if (isNaN(promoAmount) || promoAmount <= 0 || receivedChecksum !== expectedChecksum) {
-                triggerPromoError();
                 return;
             }
-
+            const parts = rawCode.split('-');
+            if (parts.length < 4) { showAlert("❌ Ошибка. Код недействителен."); return; }
+            const promoAmount = parseInt(parts, 10);
+            const receivedChecksum = parseInt(parts, 10);
+            let currentTgId = tg?.initDataUnsafe?.user?.id || 0;
+            const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
+            if (isNaN(promoAmount) || promoAmount <= 0 || receivedChecksum !== expectedChecksum) {
+                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+                return;
+            }
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true'); 
+            localStorage.setItem('used_hash_' + rawCode, 'true');
             document.getElementById('promo-input-field').value = '';
             saveProgress();
             showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
         }
 
         function switchCase(caseKey) {
-            if (spinBtn && spinBtn.disabled) return;
+            if (spinBtn?.disabled) return;
             gameState.currentCase = caseKey;
-            document.querySelectorAll('.case-card').forEach(function(c) { c.classList.remove('active'); });
-            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
+            if (event?.currentTarget) event.currentTarget.classList.add('active');
             document.getElementById('current-case-name').innerText = 'Текущий кейс: ' + casesConfig[caseKey].name;
             generateTape();
             updateUI();
@@ -682,7 +603,7 @@
         let balancedPool = [];
         function buildBalancedPool() {
             balancedPool = [];
-            casesConfig[gameState.currentCase].loot.forEach(function(p) {
+            casesConfig[gameState.currentCase].loot.forEach(p => {
                 for(let i = 0; i < p.count; i++) {
                     balancedPool.push({ icon: p.icon, name: p.name, value: p.value, type: p.type || 'money' });
                 }
@@ -694,54 +615,42 @@
             if (!tape) return;
             tape.innerHTML = '';
             for (let i = 0; i < 55; i++) {
-                const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
+                const r = balancedPool[Math.floor(Math.random() * balancedPool.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
-                item.innerHTML = '<div class="item-emoji">' + randomPrize.icon + '</div><span>' + randomPrize.name + '</span>';
-                item.setAttribute('data-value', randomPrize.value);
-                item.setAttribute('data-name', randomPrize.name);
-                item.setAttribute('data-icon', randomPrize.icon);
-                item.setAttribute('data-type', randomPrize.type);
+                item.innerHTML = '<div class="item-emoji">' + r.icon + '</div><span>' + r.name + '</span>';
+                item.setAttribute('data-value', r.value);
+                item.setAttribute('data-name', r.name);
+                item.setAttribute('data-icon', r.icon);
+                item.setAttribute('data-type', r.type);
                 tape.appendChild(item);
             }
         }
 
-        function showAlert(message) {
-            document.getElementById('custom-alert-msg').innerText = message;
+        function showAlert(m) {
+            document.getElementById('custom-alert-msg').innerText = m;
             document.getElementById('custom-alert').classList.add('show');
         }
 
-        function closeAlert() {
-            document.getElementById('custom-alert').classList.remove('show');
-        }
+        function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
 
         function startSpin() {
-            const selectedCase = casesConfig[gameState.currentCase];
-            if (gameState.balance < selectedCase.price) {
-                showAlert('Недостаточно средств! Кейс стоит ' + selectedCase.price + ' ₽. Твой баланс: ' + gameState.balance + ' ₽.');
+            const sc = casesConfig[gameState.currentCase];
+            if (gameState.balance < sc.price) {
+                showAlert('Недостаточно средств! Кейс стоит ' + sc.price + ' ₽.');
                 return;
             }
-
-            if (spinBtn) {
-                spinBtn.disabled = true;
-                spinBtn.style.opacity = '0.4';
-            }
-            
-            gameState.balance -= selectedCase.price;
+            if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
+            gameState.balance -= sc.price;
             gameState.statsOpened += 1;
             saveProgress();
-            
             generateTape();
-            if (tape) {
-                tape.style.transition = 'none';
-                tape.style.transform = 'translateX(0px)';
-            }
+            if (tape) { tape.style.transition = 'none'; tape.style.transform = 'translateX(0px)'; }
             
-            setTimeout(function() {
-                const targetIndex = 38; 
-                const wrapper = document.querySelector('.roulette-wrapper');
-                const wrapperWidth = wrapper ? wrapper.offsetWidth : 300;
-                const randomShift = Math.floor(Math.random() * 40) - 20; 
+            setTimeout(() => {
+                const targetIndex = 38;
+                const wrapperWidth = document.querySelector('.roulette-wrapper')?.offsetWidth || 300;
+                const randomShift = Math.floor(Math.random() * 40) - 20;
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
                 if (tape) {
@@ -749,28 +658,24 @@
                     tape.style.transform = 'translateX(' + targetPosition + 'px)';
                 }
                 
-                setTimeout(function() {
+                setTimeout(() => {
                     if (!tape) return;
-                    const winningItem = tape.children[targetIndex];
-                    const prizeValue = parseInt(winningItem.getAttribute('data-value'), 10);
-                    const prizeName = winningItem.getAttribute('data-name');
-                    const prizeIcon = winningItem.getAttribute('data-icon');
-                    const prizeType = winningItem.getAttribute('data-type');
+                    const wi = tape.children[targetIndex];
+                    const pVal = parseInt(wi.getAttribute('data-value'), 10);
+                    const pName = wi.getAttribute('data-name');
+                    const pIcon = wi.getAttribute('data-icon');
+                    const pType = wi.getAttribute('data-type');
                     
-                    if (prizeType === 'money') {
-                        gameState.balance += prizeValue;
-                        showAlert('Выигрыш: +' + prizeValue + ' ₽ зачислено на баланс!');
+                    if (pType === 'money') {
+                        gameState.balance += pVal;
+                        showAlert('Выигрыш: +' + pVal + ' ₽ зачислено на баланс!');
                     } else {
                         gameState.statsSkins += 1;
-                        gameState.inventory.push({ icon: prizeIcon, name: prizeName });
-                        showAlert('Отличный дроп! Предмет "' + prizeName + '" отправлен в твой инвентарь в Профиле!');
+                        gameState.inventory.push({ icon: pIcon, name: pName });
+                        showAlert('Отличный дроп! Предмет "' + pName + '" отправлен в инвентарь!');
                     }
-                    
                     saveProgress();
-                    if (spinBtn) {
-                        spinBtn.disabled = false;
-                        spinBtn.style.opacity = '1';
-                    }
+                    if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
                 }, 4800);
             }, 50);
         }
