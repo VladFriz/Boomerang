@@ -828,7 +828,7 @@
                     lp.appendChild(div);
                 });
             }
-
+            
             const inv = document.getElementById('inventory-container');
             if (inv) {
                 inv.innerHTML = '';
@@ -839,9 +839,10 @@
                         const div = document.createElement('div');
                         div.className = 'inventory-item';
                         if (item.isSkin) {
+                            // Жестко выводим именно ту картинку и то имя, которые были записаны при выигрыше
                             div.innerHTML = `
-                                <img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;">
-                                <div style="font-size:12px; font-weight:700;">${item.name}</div>
+                                <img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;" onerror="this.src='skin1.png'">
+                                <div style="font-size:12px; font-weight:700; margin-bottom:4px;">${item.name}</div>
                                 <button class="btn-sell-skin" onclick="sellSkin('${item.id}', ${item.value}, '${item.name}')">Продать за ${item.value}₽</button>
                             `;
                         } else {
@@ -851,7 +852,7 @@
                     });
                 }
             }
-        }
+
 
         function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
@@ -885,11 +886,10 @@
             saveProgress();
             showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
         }
-                function switchCase(caseKey) {
+                        function switchCase(caseKey) {
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
             
-            // Динамическая адаптация бэкграунда под атмосферу выбранного кейса
             if(caseKey === 'epic') { document.body.className = "case-epic"; } 
             else { document.body.className = "case-chill"; }
 
@@ -919,7 +919,7 @@
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
                 if (r.type === 'skin') {
-                    item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='https://placehold.co'">`;
+                    item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='skin1.png'">`;
                 } else {
                     item.innerHTML = `<div class="item-emoji" style="font-size:30px;">${r.icon}</div>`;
                 }
@@ -931,6 +931,13 @@
             }
         }
 
+        // Функция для красивого склонения рублей в уведомлении
+        function getRublesWord(val) {
+            if (val % 10 === 1 && val % 100 !== 11) return "рубль";
+            if ([2, 3, 4].includes(val % 10) && ![12, 13, 14].includes(val % 100)) return "рубля";
+            return "рублей";
+        }
+
         function startSpin() {
             const sc = casesConfig[gameState.currentCase];
             if (gameState.balance < sc.price) { 
@@ -938,9 +945,13 @@
                 return; 
             }
             if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
+            
+            // Списываем только цену кейса (для бесплатного спишется 0)
             gameState.balance -= sc.price;
             gameState.statsOpened += 1;
-            saveProgress();
+            
+            // ВАЖНО: Обновляем только текст баланса на экране, НЕ сохраняя выигрыш досрочно
+            if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
             generateTape();
             
             if (tape) { tape.style.transition = 'none'; tape.style.transform = 'translateX(0px)'; }
@@ -975,27 +986,33 @@
                 }
 
                 setTimeout(() => {
-                    // НАЧАЛО ЗАЩИЩЕННОГО БЛОКА ОТ ЗАВИСАНИЙ
                     try {
-                        if (!tape || !tape.children[targetIndex]) {
-                            if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
-                            return;
-                        }
+                        if (!tape || !tape.children[targetIndex]) return;
                         const wi = tape.children[targetIndex];
+                        
+                        // Жестко фиксируем переменные выигрыша прямо из дата-атрибутов конкретной карточки
                         const pVal = parseInt(wi.getAttribute('data-value'), 10);
-                        const pName = wi.getAttribute('data-name');
-                        const pIcon = wi.getAttribute('data-icon');
-                        const pType = wi.getAttribute('data-type');
+                        const pName = wi.getAttribute('data-name').toString();
+                        const pIcon = wi.getAttribute('data-icon').toString();
+                        const pType = wi.getAttribute('data-type').toString();
 
                         if (pType === 'money') {
+                            // Начисление денег на баланс происходит СТРОГО в момент остановки рулетки
                             gameState.balance += pVal;
-                            showCustomAlert("🎉 Вы выиграли!", `Вам успешно начислено на баланс: ${pVal} ₽.`);
+                            showCustomAlert("🎉 Вы выиграли!", `Вы выиграли ${pVal} ${getRublesWord(pVal)}! Сумма зачислена на баланс.`);
                         } else {
                             gameState.statsSkins += 1;
                             const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-                            gameState.inventory.push({ id: uniqueId, icon: pIcon, name: pName, value: pVal, isSkin: true });
                             
-                            // Защищенный вызов анимации вспышки
+                            // Сохраняем в инвентарь уникальную пару: свой ID, свою иконку и свое имя
+                            gameState.inventory.push({ 
+                                id: uniqueId, 
+                                icon: pIcon, 
+                                name: pName, 
+                                value: pVal, 
+                                isSkin: true 
+                            });
+                            
                             const explosion = document.getElementById('win-explosion');
                             if (explosion) {
                                 if (pIcon === 'skin6.png') { explosion.className = "win-explosion-overlay spark-gold"; } 
@@ -1007,9 +1024,8 @@
                         }
                         saveProgress();
                     } catch (error) {
-                        console.error("Критическая ошибка финала рулетки, спасаем интерфейс:", error);
+                        console.error("Ошибка финала рулетки:", error);
                     } finally {
-                        // ЭТОТ БЛОК ВЫПОЛНИТСЯ ПРИ ЛЮБЫХ ОБСТОЯТЕЛЬСТВАХ И РАЗБЛОКИРУЕТ КНОПКИ
                         if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
                     }
                 }, 4800);
