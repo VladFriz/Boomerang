@@ -17,7 +17,7 @@
             background-color: #0b0c16;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding-bottom: 30px;
+            padding-bottom: 40px;
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
@@ -67,83 +67,70 @@
             text-shadow: 0 0 8px #ffb800;
         }
 
-        .btn-deposit {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            border: none;
-            padding: 9px 18px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
-            transition: transform 0.2s;
-        }
-        .btn-deposit:active {
-            transform: scale(0.95);
-        }
-
-        /* Главный контейнер баннера */
-        .promo-banner {
-            margin: 15px;
-            background: linear-gradient(135deg, rgba(46,43,117,0.6) 0%, rgba(13,12,34,0.8) 100%);
-            border-radius: 24px;
-            padding: 22px;
-            position: relative;
-            border: 1px solid #2b295c;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        .promo-title {
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            background: linear-gradient(90deg, #ffffff, #a4a2cb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .promo-subtitle {
-            color: #8f8daf;
-            font-size: 14px;
-            margin-bottom: 18px;
-            font-weight: 500;
-        }
-
-        .btn-promo {
-            background: #5856d6;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(88, 86, 214, 0.3);
-        }
-
-        /* Секция Кейса */
+        /* Сетка разделов и карточки кейсов */
         .section-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
-            margin: 25px 15px 12px 15px;
+            margin: 25px 15px 15px 15px;
             letter-spacing: 0.5px;
+            border-left: 4px solid #5856d6;
+            padding-left: 10px;
         }
 
-        .case-container {
-            background: rgba(24, 25, 49, 0.5);
-            backdrop-filter: blur(5px);
-            margin: 15px;
-            border-radius: 24px;
-            padding: 24px;
+        .cases-category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 15px;
+            margin-bottom: 25px;
+        }
+
+        .case-card {
+            background: rgba(24, 25, 49, 0.6);
+            border-radius: 20px;
             border: 1px solid #1f2142;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            padding-bottom: 15px;
         }
 
-        /* Рулетка / Лента */
+        .case-card.active {
+            border-color: #ffb800;
+            box-shadow: 0 0 15px rgba(255, 184, 0, 0.2);
+        }
+
+        .case-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-bottom: 1px solid #1f2142;
+        }
+
+        .case-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 12px 10px 4px 10px;
+        }
+
+        .case-card-price {
+            font-size: 13px;
+            color: #ffb800;
+            font-weight: 700;
+        }
+
+        /* Окно активной рулетки */
+        .roulette-view-zone {
+            background: rgba(14, 15, 30, 0.7);
+            border-top: 2px solid #2e3163;
+            border-bottom: 2px solid #2e3163;
+            padding: 25px 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
         .roulette-wrapper {
             position: relative;
             width: 100%;
@@ -156,7 +143,6 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
-        /* Маркер центра */
         .roulette-wrapper::before {
             content: '';
             position: absolute;
@@ -167,8 +153,7 @@
             height: 100%;
             background: #ffb800;
             z-index: 10;
-            box-shadow: 0 0 12px #ffb800, 0 0 4px #ffb800;
-            border-radius: 2px;
+            box-shadow: 0 0 12px #ffb800;
         }
 
         .roulette-tape {
@@ -193,13 +178,11 @@
             align-items: center;
             flex-shrink: 0;
             border: 1px solid #23254e;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .roulette-item .item-emoji {
             font-size: 36px;
             margin-bottom: 6px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
         .roulette-item span {
@@ -208,31 +191,17 @@
             font-weight: 700;
         }
 
-        .timer {
-            color: #7476a3;
-            font-size: 14px;
-            margin-top: 12px;
-            font-weight: 600;
-        }
-
-        /* Кнопка открытия кейса */
         .btn-open-case {
             background: linear-gradient(135deg, #ffb800 0%, #ff9000 100%);
             color: #07080f;
             border: none;
-            padding: 15px 40px;
+            padding: 15px 50px;
             border-radius: 18px;
             font-weight: 900;
             font-size: 17px;
-            margin-top: 5px;
             cursor: pointer;
             box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4);
-            transition: transform 0.1s, box-shadow 0.3s;
             animation: pulse 2s infinite ease-in-out;
-        }
-        
-        .btn-open-case:active {
-            transform: scale(0.96);
         }
 
         @keyframes pulse {
@@ -241,47 +210,29 @@
             100% { box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4); }
         }
 
-        /* Грид предметов */
-        .items-grid {
+        /* Список лута */
+        .loot-preview-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             padding: 0 15px;
         }
 
-        .grid-item {
+        .loot-item {
             background: rgba(24, 25, 49, 0.4);
-            border-radius: 18px;
-            padding: 18px 10px;
+            border-radius: 14px;
+            padding: 12px 5px;
             text-align: center;
             border: 1px solid #1c1d3a;
         }
 
-        .item-icon {
-            font-size: 38px;
-            margin-bottom: 8px;
-            display: block;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-        }
-
-        .item-name {
-            font-size: 12px;
-            color: #b3b6db;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .item-price {
-            font-size: 14px;
-            color: #ffb800;
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(255,184,0,0.2);
-        }
+        .loot-icon { font-size: 28px; margin-bottom: 4px; display: block; }
+        .loot-name { font-size: 11px; color: #b3b6db; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <!-- Шапка приложения -->
+    <!-- Шапка -->
     <div class="header">
         <div class="logo">Boomerang</div>
         <div class="balance-container">
@@ -289,71 +240,62 @@
                 <span class="balance-icon">₽</span>
                 <span id="user-balance">0</span>
             </div>
-            <button class="btn-deposit">Топливо</button>
         </div>
     </div>
 
-    <!-- Главный баннер -->
-    <div class="promo-banner">
-        <div class="promo-title">Бонус Зоны</div>
-        <div class="promo-subtitle">Заряди баланс на максимум</div>
-        <button class="btn-promo">Пополнить ➔</button>
+    <!-- РАЗДЕЛЫ КЕЙСОВ -->
+    <div class="section-title">Доступные кейсы</div>
+    <div class="cases-category-grid">
+        <!-- Первый кейс с вашей уникальной картинкой -->
+        <div class="case-card active">
+            <img src="https://githubusercontent.com" onerror="this.src='https://ibb.co'" alt="Бомж Кейс">
+            <div class="case-card-title">Бомж Кейс</div>
+            <div class="case-card-price">Бесплатно</div>
+        </div>
+        
+        <div class="case-card" style="opacity: 0.5; filter: grayscale(1);">
+            <img src="https://ibb.co" onerror="this.src='https://ibb.co'" alt="Армейский">
+            <div class="case-card-title">Premium</div>
+            <div class="case-card-price">Скоро в игре</div>
+        </div>
     </div>
 
-    <!-- Секция Подарок дня -->
-    <div class="section-title">Ежедневный Кейс</div>
-    <div class="case-container">
+    <!-- ИГРОВАЯ ЗОНА РУЛЕТКИ -->
+    <div class="roulette-view-zone">
+        <div class="case-card-title" style="font-size: 20px; margin-top:0;">Текущий кейс: Бомж Кейс</div>
         <div class="roulette-wrapper">
             <div class="roulette-tape" id="tape"></div>
         </div>
         <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
-        <div class="timer" id="timer-text">Доступно прямо сейчас</div>
     </div>
 
-    <div class="section-title">Содержимое кейса</div>
-    <div class="items-grid">
-        <div class="grid-item">
-            <span class="item-icon">🪙</span>
-            <div class="item-name">На счет</div>
-            <div class="item-price">1 ₽</div>
-        </div>
-        <div class="grid-item">
-            <span class="item-icon">🪙</span>
-            <div class="item-name">На счет</div>
-            <div class="item-price">3 ₽</div>
-        </div>
-        <div class="grid-item">
-            <span class="item-icon">🪙</span>
-            <div class="item-name">На счет</div>
-            <div class="item-price">5 ₽</div>
-        </div>
-        <div class="grid-item">
-            <span class="item-icon">🧸</span>
-            <div class="item-name">Мишка</div>
-            <div class="item-price">24 ₽</div>
-        </div>
-        <div class="grid-item">
-            <span class="item-icon">💝</span>
-            <div class="item-name">Сердечко</div>
-            <div class="item-price">24 ₽</div>
-        </div>
-        <div class="grid-item">
-            <span class="item-icon">🌹</span>
-            <div class="item-name">Роза</div>
-            <div class="item-price">40 ₽</div>
-        </div>
+    <!-- ТЕКУЩИЙ ЛУТ -->
+    <div class="section-title">Содержимое и шансы</div>
+    <div class="loot-preview-grid">
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">1 ₽ (98%)</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">2 ₽ (1%)</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">3 ₽ (0.5%)</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">5 ₽ (0.4%)</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">10 ₽ (0.1%)</div></div>
     </div>
-
     <script>
-        const prizePool = [
-            { icon: '🪙', name: '1 ₽', value: 1 },
-            { icon: '🪙', name: '3 ₽', value: 3 },
-            { icon: '🪙', name: '5 ₽', value: 5 },
-            { icon: '🧸', name: 'Мишка', value: 24 },
-            { icon: '💝', name: 'Сердечко', value: 24 },
-            { icon: '🌹', name: 'Роза', value: 40 },
-            { icon: '💎', name: 'Алмаз', value: 100 }
+        // Математически точный пул призов для генерации ленты (всего 1000 элементов)
+        // 1 рубль - 98% (980 шт), 2 рубля - 1% (10 шт), 3 рубля - 0.5% (5 шт), 5 рублей - 0.4% (4 шт), 10 рублей - 0.1% (1 шт)
+        const prizeConfig = [
+            { icon: '🪙', name: '1 ₽', value: 1, count: 980 },
+            { icon: '🪙', name: '2 ₽', value: 2, count: 10 },
+            { icon: '🪙', name: '3 ₽', value: 3, count: 5 },
+            { icon: '🪙', name: '5 ₽', value: 5, count: 4 },
+            { icon: '🪙', name: '10 ₽', value: 10, count: 1 }
         ];
+
+        // Создаем плоский массив на 1000 элементов на основе весов
+        let balancedPool = [];
+        prizeConfig.forEach(p => {
+            for(let i = 0; i < p.count; i++) {
+                balancedPool.push({ icon: p.icon, name: p.name, value: p.value });
+            }
+        });
 
         const tape = document.getElementById('tape');
         const spinBtn = document.getElementById('spin-btn');
@@ -362,13 +304,14 @@
 
         function generateTape() {
             tape.innerHTML = '';
-            for (let i = 0; i < 45; i++) {
-                const randomPrize = prizePool[Math.floor(Math.random() * prizePool.length)];
+            // Генерируем длинную ленту прокрутки
+            for (let i = 0; i < 55; i++) {
+                // Извлекаем абсолютно случайный элемент с учетом заложенных вероятностей
+                const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
                 item.innerHTML = `<div class="item-emoji">${randomPrize.icon}</div><span>${randomPrize.name}</span>`;
                 item.dataset.value = randomPrize.value;
-                item.dataset.isMoney = randomPrize.icon === '🪙';
                 tape.appendChild(item);
             }
         }
@@ -385,60 +328,28 @@
             tape.style.transform = 'translateX(0px)';
             
             setTimeout(() => {
-                const targetIndex = 32; 
+                const targetIndex = 38; // Индекс победного элемента
                 const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
                 const randomShift = Math.floor(Math.random() * 40) - 20; 
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
-                tape.style.transition = 'transform 4.5s cubic-bezier(0.1, 0.85, 0.1, 1)';
+                tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
                 tape.style.transform = `translateX(${targetPosition}px)`;
                 
                 setTimeout(() => {
                     const winningItem = tape.children[targetIndex];
-                    const isMoney = winningItem.dataset.isMoney === 'true';
                     const prizeValue = parseInt(winningItem.dataset.value);
                     
                     let currentBalance = parseInt(balanceDisplay.innerText);
+                    balanceDisplay.innerText = currentBalance + prizeValue;
                     
-                    if (isMoney) {
-                        balanceDisplay.innerText = currentBalance + prizeValue;
-                        alert(`Отлично! Твой выигрыш: +${prizeValue} ₽ на баланс.`);
-                    } else {
-                        balanceDisplay.innerText = currentBalance + prizeValue; 
-                        alert(`Супер дроп! Выпал предмет "${winningItem.querySelector('span').innerText}" ценой в ${prizeValue} ₽! Сумма зачислена.`);
-                    }
+                    alert(`Выигрыш: +${prizeValue} ₽ зачислено на баланс!`);
                     
-                    startTimer();
-                }, 4500);
-            }, 50);
-        }
-
-        function startTimer() {
-            let timeLeft = 24 * 60 * 60; 
-            const timerText = document.getElementById('timer-text');
-            spinBtn.innerText = "Перезарядка...";
-            
-            const interval = setInterval(() => {
-                if (timeLeft <= 0) {
-                    clearInterval(interval);
-                    timerText.innerText = "Доступно прямо сейчас";
                     spinBtn.disabled = false;
                     spinBtn.style.opacity = '1';
                     spinBtn.style.animation = 'pulse 2s infinite ease-in-out';
-                    spinBtn.innerText = "Крутить Кейс";
-                } else {
-                    timeLeft--;
-                    let hours = Math.floor(timeLeft / 3600);
-                    let minutes = Math.floor((timeLeft % 3600) / 60);
-                    let seconds = timeLeft % 60;
-                    
-                    hours = hours < 10 ? '0' + hours : hours;
-                    minutes = minutes < 10 ? '0' + minutes : minutes;
-                    seconds = seconds < 10 ? '0' + seconds : seconds;
-                    
-                    timerText.innerText = `Следующий запуск через ${hours}:${minutes}:${seconds}`;
-                }
-            }, 1000);
+                }, 4800);
+            }, 50);
         }
     </script>
 </body>
