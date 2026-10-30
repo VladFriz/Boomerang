@@ -36,6 +36,7 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
             font-size: 24px;
             font-weight: 900;
@@ -43,7 +44,6 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
-
         .balance-container {
             display: flex;
             align-items: center;
@@ -84,6 +84,7 @@
             padding: 0 15px;
             margin-bottom: 25px;
         }
+
         .case-card {
             background: rgba(24, 25, 49, 0.6);
             border-radius: 20px;
@@ -116,7 +117,6 @@
             color: #ffb800;
             font-weight: 700;
         }
-
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -149,6 +149,7 @@
             font-weight: 800;
             cursor: pointer;
         }
+
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -218,7 +219,6 @@
             font-size: 36px;
             margin-bottom: 6px;
         }
-
         .btn-open-case {
             background: linear-gradient(135deg, #ffb800 0%, #ff9000 100%);
             color: #07080f;
@@ -229,6 +229,7 @@
             font-size: 17px;
             cursor: pointer;
         }
+
         .profile-container {
             padding: 15px;
         }
@@ -467,7 +468,6 @@
                 <div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>
             </div>
 
-            <!-- Кнопка очистки для обновления кэша -->
             <button class="btn-reset-data" onclick="resetAllDataData()">⚠️ Очистить прогресс (Сбросить кэш скинов)</button>
         </div>
     </div>
@@ -498,17 +498,16 @@
 
         try {
             if (tg?.initDataUnsafe?.user) {
-                const user = tg.initDataUnsafe.user;
-                if (user.first_name) {
-                    document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+                const u = tg.initDataUnsafe.user;
+                if (u.first_name) {
+                    document.getElementById('tg-user-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
                 }
-                if (user.photo_url) {
-                    document.getElementById('tg-user-avatar').src = user.photo_url;
+                if (u.photo_url) {
+                    document.getElementById('tg-user-avatar').src = u.photo_url;
                 }
             }
         } catch (e) {}
 
-        // ЗДЕСЬ СТОЯТ НАСТОЯЩИЕ НАЗВАНИЯ ТВОИХ ФОТО-СКИНОВ ИЗ РЕПОЗИТОРИЯ GITHUB
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс", price: 0, loot: [
@@ -521,12 +520,12 @@
             },
             epic: {
                 name: "Epic Zone", price: 100, loot: [
-                    { icon: 'skin1.png', name: 'CHARM | CHICKEN', value: 2500, type: 'skin', count: 5 }, 
-                    { icon: 'skin2.png', name: 'UMP | K.O FACTORY', value: 1500, type: 'skin', count: 15 }, 
-                    { icon: 'skin3.png', name: 'P90 | SCARAB RUSH', value: 1000, type: 'skin', count: 30 }, 
-                    { icon: 'skin4.png', name: 'AUG STUMPHALIAN', value: 500, type: 'skin', count: 100 }, 
-                    { icon: 'skin5.png', name: 'AK-47 | SEARING RAGE', value: 300, type: 'skin', count: 250 }, 
-                    { icon: 'skin6.png', name: 'SKELETON KNIFE | TIGER TOOTH', value: 150, type: 'skin', count: 600 }  
+                    { icon: 'skin1.png', name: 'Тычковые ножи', value: 2500, type: 'skin', count: 5 }, 
+                    { icon: 'skin2.png', name: 'M4A4 | Магний', value: 1500, type: 'skin', count: 15 }, 
+                    { icon: 'skin3.png', name: 'Desert Eagle', value: 1000, type: 'skin', count: 30 }, 
+                    { icon: 'skin4.png', name: 'AWP | Азимов', value: 500, type: 'skin', count: 100 }, 
+                    { icon: 'skin5.png', name: 'AK-47 | Легион', value: 300, type: 'skin', count: 250 }, 
+                    { icon: 'skin6.png', name: 'Нож-бабочка', value: 150, type: 'skin', count: 600 }  
                 ]
             }
         };
@@ -603,7 +602,7 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
-        // ВЫВЕРЕННЫЙ ИСПРАВЛЕННЫЙ ОДНОРАЗОВЫЙ ПАРСЕР ПРОМОКОДОВ
+        // БАГ С ОПЕЧАТКОЙ ТЕПЕРЬ ПОЛНОСТЬЮ ИСПРАВЛЕН ВО ВСЕЙ ФУНКЦИИ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
@@ -622,8 +621,8 @@
                 return; 
             }
 
-            // Извлекаем сумму строго со 3-го индекса массива строк
-            const promoAmount = parseInt(parts, 10);
+            // ПРАВИЛЬНЫЙ ВЫБОР: Считываем сумму номинала строго со 3-го индекса правильного массива строк parts
+            const promoAmount = parseInt(parts[3], 10);
 
             if (isNaN(promoAmount) || promoAmount <= 0) {
                 triggerPromoError();
@@ -631,7 +630,7 @@
             }
 
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true'); // Код сгорает
+            localStorage.setItem('used_hash_' + rawCode, 'true'); 
             document.getElementById('promo-input-field').value = '';
             saveProgress();
             showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
