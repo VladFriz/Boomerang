@@ -661,11 +661,11 @@
             document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
-        // ИСПРАВЛЕНО: Полная очистка скрытых символов переноса строки Телеграма (\n)
+                // БАГ ИСПРАВЛЕН: Теперь сумма берётся строго из parts[3] и очищается от переносов строк \n
         function activateAdminPromo() {
             let rawCode = document.getElementById('promo-input-field').value.trim();
             
-            // Удаляем невидимые переносы строк и пробелы, которые ломали parseInt
+            // Очищаем скрытые символы переноса строк
             rawCode = rawCode.replace(/[\r\n\x0B\x0C\x85]/g, "").trim();
             
             function triggerPromoError() { 
@@ -683,8 +683,8 @@
                 return; 
             }
 
-            // Извлекаем чистую сумму без скрытого мусора Телеграма
-            const promoAmount = parseInt(parts, 10);
+            // ИСПРАВЛЕНО: Добавлен индекс [3] для точного взятия числа номинала промокода
+            const promoAmount = parseInt(parts[3], 10);
 
             if (isNaN(promoAmount) || promoAmount <= 0) {
                 triggerPromoError();
@@ -800,3 +800,4 @@
     </script>
 </body>
 </html>
+
