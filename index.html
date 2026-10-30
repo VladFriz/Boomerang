@@ -694,7 +694,7 @@
             }
         } catch(e) {}
 
-        // НАСТРОЕНО: Настоящие официальные имена из CS и веса шансов (Курица — ширпотреб 50₽, Нож — раритет 2500₽)
+        // НАСТРОЕНО: Курица на первом месте как ширпотреб по цене (50₽), но падает чаще всех (вес 450). Все пушки идут по порядку.
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс",
@@ -712,9 +712,9 @@
                 price: 100,
                 loot: [
                     { icon: 'skin4.png', name: 'Charm | Chicken', value: 50, type: 'skin', count: 450 },
-                    { icon: 'skin3.png', name: 'AUG | Stymphalian', value: 100, type: 'skin', count: 250 },
+                    { icon: 'skin1.png', name: 'UMP-45 | K.O. Factory', value: 100, type: 'skin', count: 250 },
                     { icon: 'skin2.png', name: 'P90 | Scarab Rush', value: 150, type: 'skin', count: 180 },
-                    { icon: 'skin1.png', name: 'UMP-45 | K.O. Factory', value: 250, type: 'skin', count: 90 },
+                    { icon: 'skin3.png', name: 'AUG | Stymphalian', value: 250, type: 'skin', count: 90 },
                     { icon: 'skin5.png', name: 'AK-47 | Searing Rage', value: 1500, type: 'skin', count: 25 },
                     { icon: 'skin6.png', name: '★ Skeleton Knife | Tiger Tooth', value: 2500, type: 'skin', count: 5 }
                 ]
@@ -840,10 +840,10 @@
                 casesConfig[gameState.currentCase].loot.forEach((item) => {
                     const div = document.createElement('div');
                     if (item.type === 'skin') {
-                        let rarityClass = 'rarity-purple'; // По умолчанию фиолетовые пушки
+                        // НАСТРОЕНО: Курица, Юмп, П90 и Ауг теперь все имеют красивую фиолетовую неоновую обводку
+                        let rarityClass = 'rarity-purple'; 
                         if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
                         else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
-                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-blue'; // НАСТРОЕНО: Чарм подсвечивается синим (ширпотреб)
 
                         div.className = `loot-item ${rarityClass}`;
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
@@ -902,7 +902,6 @@
             });
         }
 
-        // НАСТРОЕНО: На крутящуюся ленту бесплатного кейса выводится номинал рублей под монеткой!
         function generateTape() {
             buildBalancedPool();
             if (!tape) return;
