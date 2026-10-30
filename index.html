@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
+    <!-- Подключаем официальный скрипт Telegram для получения аватарок -->
+    <script src="https://telegram.org"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -22,7 +24,6 @@
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
 
-        /* ПРОФЕССИОНАЛЬНЫЙ ИГРОВОЙ ЭКРАН ЗАГРУЗКИ */
         #preloader {
             position: fixed;
             top: 0;
@@ -43,7 +44,6 @@
             visibility: hidden;
         }
 
-        /* Эффект пульсирующего неонового текста с радужным переливом */
         .neon-loader-text {
             font-size: 38px;
             font-weight: 950;
@@ -78,7 +78,6 @@
             top: 0;
             z-index: 100;
         }
-
         .logo {
             font-size: 24px;
             font-weight: 900;
@@ -86,6 +85,7 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
+
         .balance-container {
             display: flex;
             align-items: center;
@@ -117,6 +117,41 @@
             display: block;
         }
 
+        /* Стильный блок профиля пользователя Telegram */
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(24, 25, 49, 0.5);
+            border: 1px solid #1f2142;
+            padding: 15px;
+            border-radius: 20px;
+            margin: 15px;
+        }
+
+        .user-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 2px solid #5856d6;
+            box-shadow: 0 0 15px rgba(88, 86, 214, 0.4);
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #ffb800;
+            font-weight: 700;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -168,6 +203,7 @@
             color: #ffb800;
             font-weight: 700;
         }
+
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -285,7 +321,7 @@
         }
 
         .profile-container {
-            padding: 15px;
+            padding: 5px 15px;
         }
 
         .stats-grid {
@@ -423,7 +459,6 @@
 </head>
 <body>
 
-    <!-- КРУТОЙ НЕОНОВЫЙ ИГРОВОЙ ЭКРАН ЗАГРУЗКИ -->
     <div id="preloader">
         <div class="neon-loader-text">BOOMERANG</div>
     </div>
@@ -483,8 +518,17 @@
 
     <!-- ЭКРАН ПРОФИЛЯ -->
     <div id="screen-profile" class="app-screen">
+        <!-- Новый блок профиля с интеграцией Telegram аватарки -->
+        <div class="user-profile-header">
+            <img src="https://ibb.co" id="tg-user-avatar" class="user-avatar" alt="User Avatar">
+            <div>
+                <div class="user-name" id="tg-user-name">Игрок Boomerang</div>
+                <div class="user-role">Пользователь</div>
+            </div>
+        </div>
+
         <div class="profile-container">
-            <div class="section-title" style="margin-left:0; padding-left:10px;">Статистика профиля</div>
+            <div class="section-title" style="margin-left:0; padding-left:10px; margin-top:10px;">Статистика профиля</div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-value" id="stat-opened">0</div>
@@ -523,6 +567,24 @@
         </div>
     </div>
     <script>
+        // Инициализируем Telegram WebApp API
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем окно на максимум в приложении
+
+        // Подгружаем настоящую аватарку и никнейм из Telegram чата
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            if (user.first_name) {
+                document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+            }
+            // Подтягиваем аватарку (если у пользователя скрыты настройки приватности, отобразится дефолтный логотип)
+            if (user.photo_url) {
+                document.getElementById('tg-user-avatar').src = user.photo_url;
+            } else {
+                document.getElementById('tg-user-avatar').src = "https://icons8.com";
+            }
+        }
+
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс",
@@ -622,7 +684,7 @@
                 showAlert("❌ Неверный код!");
                 return;
             }
-            const promoAmount = parseInt(parts);
+            const promoAmount = parseInt(parts[2]);
             if (isNaN(promoAmount) || promoAmount <= 0) {
                 showAlert("❌ Ошибка чтения суммы.");
                 return;
@@ -732,12 +794,11 @@
         updateUI();
         generateTape();
 
-        // КОНТРОЛЬ НЕОНОВОГО ПРЕЛОАДЕРА ПРИ СТАРТЕ СТРАНИЦЫ
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const preloader = document.getElementById('preloader');
                 preloader.classList.add('preloader-hidden');
-            }, 2600); // Интро красиво пульсирует и плавно уходит через 2.6 секунды
+            }, 2600);
         });
     </script>
 </body>
