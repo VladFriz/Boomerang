@@ -656,7 +656,7 @@
                 });
             }
         }
-        function showScreen(screenName) {
+               function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
             document.getElementById('screen-deposit').style.display = 'none';
@@ -668,7 +668,7 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
-        // ВЕРИФИКАЦИЯ ОДНОРАЗОВЫХ СЕКРЕТНЫХ КРИПТО-КОДОВ (МАССИВЫ ПОЛНОСТЬЮ ИСПРАВЛЕНЫ)
+        // ИСПРАВЛЕННАЯ СИСТЕМА ЧТЕНИЯ МАССИВОВ КРИПТО-КОДОВ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
@@ -691,9 +691,9 @@
                 return;
             }
 
-            // Получаем корректные элементы массива по индексам (исправленный баг)
-            const promoAmount = parseInt(parts[2]);
-            const receivedChecksum = parseInt(parts[3]);
+            // ИСПРАВЛЕНО: Четко берем 2-й и 3-й индексы массива для парсинга чисел
+            const promoAmount = parseInt(parts[2], 10);
+            const receivedChecksum = parseInt(parts[3], 10);
             
             let currentTgId = 0;
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
@@ -723,7 +723,6 @@
             generateTape();
             updateUI();
         }
-
         let balancedPool = [];
         function buildBalancedPool() {
             balancedPool = [];
@@ -788,7 +787,7 @@
                 
                 setTimeout(function() {
                     const winningItem = tape.children[targetIndex];
-                    const prizeValue = parseInt(winningItem.getAttribute('data-value'));
+                    const prizeValue = parseInt(winningItem.getAttribute('data-value'), 10);
                     const prizeName = winningItem.getAttribute('data-name');
                     const prizeIcon = winningItem.getAttribute('data-icon');
                     const prizeType = winningItem.getAttribute('data-type');
@@ -812,7 +811,7 @@
         updateUI();
         generateTape();
 
-        // КОНТРОЛЬ ИСЧЕЗНОВЕНИЯ ИГРОВОГО ИНТРО-ЗАСТАВКИ
+        // НАДЕЖНОЕ СКРЫТИЕ ЗАСТАВКИ
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const preloader = document.getElementById('preloader');
