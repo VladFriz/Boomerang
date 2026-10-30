@@ -24,7 +24,7 @@
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
             transition: background 0.8s ease;
         }
-        /* Премиальные динамические бэкграунды под атмосферу каждого кейса */
+        /* Премиальные динамические бэкграунды под разные кейсы */
         body.case-chill {
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
@@ -157,12 +157,6 @@
 
         .loot-item:active {
             transform: scale(0.95);
-        }
-
-        /* Фикс: убираем только дублирующие текстовые ценники <p>, не ломая эмодзи-монеты */
-        .loot-preview-grid .loot-item p,
-        #loot-preview-container .loot-item p {
-            display: none !important;
         }
         .rarity-gold {
             border: 1px solid #ffb800 !important;
@@ -516,7 +510,7 @@
             border: 2px solid #5856d6;
             object-fit: cover;
         }
-        /* Премиальная Glassmorphic кнопка полного вайпа данных */
+        /* Неоновая кнопка полного сброса всего прогресса игры */
         .btn-danger-neon {
             background: rgba(255, 65, 108, 0.08) !important;
             border: 1px solid rgba(255, 65, 108, 0.35) !important;
@@ -542,7 +536,7 @@
             box-shadow: 0 0 20px rgba(255, 65, 108, 0.4) !important;
         }
 
-        /* Полноэкранный эффект искр для Ножа / Калаша */
+        /* Полноэкранный эффект искр для ценного лута */
         .win-explosion-overlay {
             position: fixed;
             top: 0;
@@ -574,7 +568,7 @@
 </head>
 <body class="case-chill">
 
-    <!-- ФИКС: Слой для неоновых искр объявлен в самом верху body, предотвращая зависание -->
+    <!-- ФИКС: Слой для вспышек объявлен сразу под body, убирая любые зависания кнопок рулетки -->
     <div id="win-explosion" class="win-explosion-overlay"></div>
 
     <div class="header">
@@ -601,7 +595,6 @@
                 <div class="case-card-price">100 ₽</div>
             </div>
         </div>
-
         <div class="roulette-view-zone">
             <div class="case-card-title" id="current-case-name" style="font-size: 20px; margin-bottom:15px;">Текущий кейс: Бомж Кейс</div>
             <div class="roulette-wrapper">
@@ -733,7 +726,7 @@
         const spinBtn = document.getElementById('spin-btn');
         const balanceDisplay = document.getElementById('user-balance');
         const itemWidth = 112;
-        // Электронный синтезатор: интервал тиков увеличивается, а тон падает синхронно с торможением барабана
+        // Электронный аудиосинтезатор замедления тиков к финалу прокрутки барабана
         function playTickSound(playbackRate) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -756,6 +749,7 @@
                 osc.stop(ctx.currentTime + 0.06);
             } catch(e) {}
         }
+
         function saveProgress() {
             updateUI();
             if (tg && tg.CloudStorage) {
@@ -772,7 +766,6 @@
                 localStorage.setItem('bm_used_promos', JSON.stringify(gameState.usedPromos));
             }
         }
-
         function loadProgressFromCloud() {
             if (tg && tg.CloudStorage) {
                 tg.CloudStorage.getItems(['bm_balance', 'bm_stats_opened', 'bm_stats_skins', 'bm_inventory', 'bm_used_promos'], (err, res) => {
@@ -796,13 +789,13 @@
                 generateTape();
             }
         }
+
         function sellSkin(uniqueId, price, name) {
             gameState.inventory = gameState.inventory.filter(item => item.id !== uniqueId);
             gameState.balance += price;
             saveProgress();
             showCustomAlert("🤝 Скин продан!", `Вы успешно продали предмет "${name}" за ${price} ₽.`);
         }
-
         function updateUI() {
             if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
             if (document.getElementById('stats-opened')) document.getElementById('stats-opened').innerText = gameState.statsOpened;
@@ -825,9 +818,12 @@
                         div.className = `loot-item ${rarityClass}`;
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='skin1.png'"/>`;
                     } else {
-                        // ФИКС: Рендерим чистые эмодзи-монеты крупно, без скрываемого CSS-тега <p>
+                        // ФИКС: Рендерим монету и аккуратный золотой номинал рублей прямо под ней
                         div.className = 'loot-item rarity-blue';
-                        div.innerHTML = `<span style="font-size:36px; display:block;">${item.icon}</span>`;
+                        div.innerHTML = `
+                            <span style="font-size:34px; display:block; margin-bottom:2px;">${item.icon}</span>
+                            <span style="font-size:13px; font-weight:800; color:#ffb800; display:block;">${item.name.replace('P', '₽')}</span>
+                        `;
                     }
                     lp.appendChild(div);
                 });
@@ -893,7 +889,7 @@
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
             
-            // Динамическая смена темы фона при переключении кейса
+            // Динамическая адаптация бэкграунда под атмосферу выбранного кейса
             if(caseKey === 'epic') { document.body.className = "case-epic"; } 
             else { document.body.className = "case-chill"; }
 
@@ -994,7 +990,7 @@
                         const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
                         gameState.inventory.push({ id: uniqueId, icon: pIcon, name: pName, value: pVal, isSkin: true });
                         
-                        // Активация полноэкранной вспышки разлетающихся искр
+                        // Полноэкранный взрыв искр при редком выигрыше
                         const explosion = document.getElementById('win-explosion');
                         if (explosion) {
                             if (pIcon === 'skin6.png') { explosion.className = "win-explosion-overlay spark-gold"; } 
