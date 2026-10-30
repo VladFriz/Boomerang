@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
-    <!-- Официальный скрипт Telegram для работы с данными юзера -->
+    <!-- Официальный скрипт Telegram Web App -->
     <script src="https://telegram.org"></script>
     <style>
         * {
@@ -23,7 +23,7 @@
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
-        /* СТИЛИ ИГРОВОГО ЭКРАНА ЗАГРУЗКИ */
+        /* АНИМАЦИЯ ЭКРАНА ЗАГРУЗКИ */
         #preloader {
             position: fixed;
             top: 0;
@@ -40,8 +40,8 @@
         }
 
         .preloader-hidden {
-            opacity: 0;
-            visibility: hidden;
+            opacity: 0 !important;
+            visibility: hidden !important;
         }
 
         .neon-loader-text {
@@ -125,7 +125,6 @@
             border-left: 4px solid #5856d6;
             padding-left: 10px;
         }
-
         .cases-category-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -168,6 +167,7 @@
             color: #ffb800;
             font-weight: 700;
         }
+
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -202,7 +202,6 @@
             font-size: 14px;
             cursor: pointer;
         }
-
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -318,6 +317,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .profile-container {
             padding: 5px 15px;
         }
@@ -372,7 +372,6 @@
             font-weight: 600;
             font-size: 14px;
         }
-
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -471,7 +470,6 @@
             </div>
         </div>
     </div>
-
     <!-- ЭКРАН КЕЙСОВ -->
     <div id="screen-cases" class="app-screen active-screen">
         <div class="section-title">Доступные кейсы</div>
@@ -488,7 +486,7 @@
             </div>
         </div>
 
-        <div class="rou roulette-view-zone">
+        <div class="roulette-view-zone">
             <div class="case-card-title" id="current-case-name" style="font-size: 20px; margin-top:0;">Текущий кейс: Бомж Кейс</div>
             <div class="roulette-wrapper">
                 <div class="roulette-tape" id="tape"></div>
@@ -565,13 +563,78 @@
             <button class="custom-alert-btn" onclick="closeAlert()">Отлично</button>
         </div>
     </div>
+    <!-- ЭКРАН ТОПЛИВА (АКТИВАЦИЯ ПРОМОКОДОВ) -->
+    <div id="screen-deposit" class="app-screen">
+        <div class="section-title">Активация Топлива</div>
+        <div class="promo-input-box">
+            <div class="case-card-title" style="margin-top:0; margin-bottom:10px;">Введи секретный код админа</div>
+            <input type="text" class="promo-field" id="promo-input-field" placeholder="BOOM-123456-500">
+            <button class="promo-btn" onclick="activateAdminPromo()">Активировать код</button>
+        </div>
+        <div class="section-title" style="font-size:14px; color:#8f8daf; border:none; text-align:center;">
+            Коды выдаются создателем проекта и доверенными администраторами в боте.
+        </div>
+    </div>
+
+    <!-- ЭКРАН ПРОФИЛЯ -->
+    <div id="screen-profile" class="app-screen">
+        <div class="user-profile-header">
+            <img src="https://ibb.co" id="tg-user-avatar" class="user-avatar" alt="User Avatar">
+            <div>
+                <div class="user-name" id="tg-user-name">Игрок Boomerang</div>
+                <div class="user-role">Пользователь</div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <div class="section-title" style="margin-left:0; padding-left:10px; margin-top:10px;">Статистика профиля</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-opened">0</div>
+                    <div class="stat-label">Открыто кейсов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-skins">0</div>
+                    <div class="stat-label">Выбито подарков</div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-left:0; padding-left:10px;">Твой инвентарь (Подарки)</div>
+            <div class="inventory-grid" id="inventory-container">
+                <div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
+            <span class="nav-icon">📦</span>Кейсы
+        </button>
+        <button class="nav-item" id="nav-btn-deposit" onclick="showScreen('deposit')">
+            <span class="nav-icon">⚡</span>Топливо
+        </button>
+        <button class="nav-item" id="nav-btn-profile" onclick="showScreen('profile')">
+            <span class="nav-icon">👤</span>Профиль
+        </button>
+    </div>
+
+    <div class="custom-alert-overlay" id="custom-alert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-title">🎉 Поздравляем!</div>
+            <div class="custom-alert-message" id="custom-alert-msg">Вы выиграли!</div>
+            <button class="custom-alert-btn" onclick="closeAlert()">Отлично</button>
+        </div>
+    </div>
     <script>
         // Инициализируем Telegram WebApp API
         const tg = window.Telegram.WebApp;
-        tg.expand(); 
+        if (tg && typeof tg.expand === 'function') {
+            tg.expand();
+        }
 
         // Подгружаем аватарку и никнейм из Telegram чата пользователя
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             if (user.first_name) {
                 document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
@@ -629,45 +692,60 @@
         }
 
         function updateUI() {
-            balanceDisplay.innerText = gameState.balance;
-            document.getElementById('stat-opened').innerText = gameState.statsOpened;
-            document.getElementById('stat-skins').innerText = gameState.statsSkins;
+            if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
+            const openedEl = document.getElementById('stat-opened');
+            const skinsEl = document.getElementById('stat-skins');
+            if (openedEl) openedEl.innerText = gameState.statsOpened;
+            if (skinsEl) skinsEl.innerText = gameState.statsSkins;
             
             const lootPreview = document.getElementById('loot-preview-container');
-            lootPreview.innerHTML = '';
-            casesConfig[gameState.currentCase].loot.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'loot-item';
-                div.innerHTML = '<span class="loot-icon">' + item.icon + '</span><div class="loot-name">' + item.name + '</div>';
-                lootPreview.appendChild(div);
-            });
+            if (lootPreview) {
+                lootPreview.innerHTML = '';
+                casesConfig[gameState.currentCase].loot.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'loot-item';
+                    div.innerHTML = '<span class="loot-icon">' + item.icon + '</span><div class="loot-name">' + item.name + '</div>';
+                    lootPreview.appendChild(div);
+                });
+            }
 
             const invContainer = document.getElementById('inventory-container');
-            invContainer.innerHTML = '';
-            if (gameState.inventory.length === 0) {
-                invContainer.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>';
-            } else {
-                gameState.inventory.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'inventory-item';
-                    div.innerHTML = '<div style="font-size:32px; margin-bottom:4px;">' + item.icon + '</div><div style="font-size:12px; font-weight:700;">' + item.name + '</div>';
-                    invContainer.appendChild(div);
-                });
+            if (invContainer) {
+                invContainer.innerHTML = '';
+                if (gameState.inventory.length === 0) {
+                    invContainer.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>';
+                } else {
+                    gameState.inventory.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'inventory-item';
+                        div.innerHTML = '<div style="font-size:32px; margin-bottom:4px;">' + item.icon + '</div><div style="font-size:12px; font-weight:700;">' + item.name + '</div>';
+                        invContainer.appendChild(div);
+                    });
+                }
             }
         }
         function showScreen(screenName) {
-            document.getElementById('screen-cases').style.display = 'none';
-            document.getElementById('screen-profile').style.display = 'none';
-            document.getElementById('screen-deposit').style.display = 'none';
-            document.getElementById('nav-btn-cases').classList.remove('active');
-            document.getElementById('nav-btn-profile').classList.remove('active');
-            document.getElementById('nav-btn-deposit').classList.remove('active');
+            const scCases = document.getElementById('screen-cases');
+            const scProfile = document.getElementById('screen-profile');
+            const scDeposit = document.getElementById('screen-deposit');
+            if (scCases) scCases.style.display = 'none';
+            if (scProfile) scProfile.style.display = 'none';
+            if (scDeposit) scDeposit.style.display = 'none';
             
-            document.getElementById('screen-' + screenName).style.display = 'block';
-            document.getElementById('nav-btn-' + screenName).classList.add('active');
+            const btnCases = document.getElementById('nav-btn-cases');
+            const btnProfile = document.getElementById('nav-btn-profile');
+            const btnDeposit = document.getElementById('nav-btn-deposit');
+            if (btnCases) btnCases.classList.remove('active');
+            if (btnProfile) btnProfile.classList.remove('active');
+            if (btnDeposit) btnDeposit.classList.remove('active');
+            
+            const targetScreen = document.getElementById('screen-' + screenName);
+            const targetBtn = document.getElementById('nav-btn-' + screenName);
+            if (targetScreen) targetScreen.style.display = 'block';
+            if (targetBtn) targetBtn.classList.add('active');
         }
 
-        // ВЕРИФИКАЦИЯ ОДНОРАЗОВЫХ СЕКРЕТНЫХ КРИПТО-КОДОВ (МАССИВЫ ПОЛНОСТЬЮ ИСПРАВЛЕНЫ)
+        // ВЫВЕРЕННЫЙ ДО ИНДЕКСА ПАРСИНГ УНИКАЛЬНЫХ КРИПТО-КОДОВ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
@@ -675,28 +753,19 @@
                 showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
             }
 
-            if (!rawCode.startsWith("BOOM-")) {
-                triggerPromoError();
-                return;
-            }
-            if (localStorage.getItem('used_hash_' + rawCode)) {
-                triggerPromoError();
-                return;
-            }
+            if (!rawCode.startsWith("BOOM-")) { triggerPromoError(); return; }
+            if (localStorage.getItem('used_hash_' + rawCode)) { triggerPromoError(); return; }
 
             const parts = rawCode.split('-');
-            if (parts.length < 4) {
-                triggerPromoError();
-                return;
-            }
+            if (parts.length < 4) { triggerPromoError(); return; }
 
-            // ПОЧИНЕНО: Правильный выбор индексов элементов массива для парсинга чисел
+            // ПРАВИЛЬНЫЙ ВЫБОР ИНДЕКСОВ МАССИВА
             const promoAmount = parseInt(parts[2], 10);
             const receivedChecksum = parseInt(parts[3], 10);
             
             let currentTgId = 0;
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                currentTgId = window.Telegram.WebApp.initDataUnsafe.user.id || 0;
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                currentTgId = tg.initDataUnsafe.user.id || 0;
             }
 
             const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
@@ -708,20 +777,23 @@
 
             gameState.balance += promoAmount;
             localStorage.setItem('used_hash_' + rawCode, 'true'); 
-            document.getElementById('promo-input-field').value = '';
+            const inputField = document.getElementById('promo-input-field');
+            if (inputField) inputField.value = '';
             saveProgress();
             showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
         }
 
         function switchCase(caseKey) {
-            if (spinBtn.disabled) return;
+            if (spinBtn && spinBtn.disabled) return;
             gameState.currentCase = caseKey;
             document.querySelectorAll('.case-card').forEach(function(c) { c.classList.remove('active'); });
-            event.currentTarget.classList.add('active');
-            document.getElementById('current-case-name').innerText = 'Текущий кейс: ' + casesConfig[caseKey].name;
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            const caseNameEl = document.getElementById('current-case-name');
+            if (caseNameEl) caseNameEl.innerText = 'Текущий кейс: ' + casesConfig[caseKey].name;
             generateTape();
             updateUI();
         }
+
         let balancedPool = [];
         function buildBalancedPool() {
             balancedPool = [];
@@ -734,6 +806,7 @@
 
         function generateTape() {
             buildBalancedPool();
+            if (!tape) return;
             tape.innerHTML = '';
             for (let i = 0; i < 55; i++) {
                 const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
@@ -749,12 +822,15 @@
         }
 
         function showAlert(message) {
-            document.getElementById('custom-alert-msg').innerText = message;
-            document.getElementById('custom-alert').classList.add('show');
+            const alertMsg = document.getElementById('custom-alert-msg');
+            const alertEl = document.getElementById('custom-alert');
+            if (alertMsg) alertMsg.innerText = message;
+            if (alertEl) alertEl.classList.add('show');
         }
 
         function closeAlert() {
-            document.getElementById('custom-alert').classList.remove('show');
+            const alertEl = document.getElementById('custom-alert');
+            if (alertEl) alertEl.classList.remove('show');
         }
 
         function startSpin() {
@@ -764,27 +840,35 @@
                 return;
             }
 
-            spinBtn.disabled = true;
-            spinBtn.style.opacity = '0.4';
+            if (spinBtn) {
+                spinBtn.disabled = true;
+                spinBtn.style.opacity = '0.4';
+            }
             
             gameState.balance -= selectedCase.price;
             gameState.statsOpened += 1;
             saveProgress();
             
             generateTape();
-            tape.style.transition = 'none';
-            tape.style.transform = 'translateX(0px)';
+            if (tape) {
+                tape.style.transition = 'none';
+                tape.style.transform = 'translateX(0px)';
+            }
             
             setTimeout(function() {
                 const targetIndex = 38; 
-                const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
+                const wrapper = document.querySelector('.roulette-wrapper');
+                const wrapperWidth = wrapper ? wrapper.offsetWidth : 300;
                 const randomShift = Math.floor(Math.random() * 40) - 20; 
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
-                tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
-                tape.style.transform = 'translateX(' + targetPosition + 'px)';
+                if (tape) {
+                    tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
+                    tape.style.transform = 'translateX(' + targetPosition + 'px)';
+                }
                 
                 setTimeout(function() {
+                    if (!tape) return;
                     const winningItem = tape.children[targetIndex];
                     const prizeValue = parseInt(winningItem.getAttribute('data-value'), 10);
                     const prizeName = winningItem.getAttribute('data-name');
@@ -801,8 +885,10 @@
                     }
                     
                     saveProgress();
-                    spinBtn.disabled = false;
-                    spinBtn.style.opacity = '1';
+                    if (spinBtn) {
+                        spinBtn.disabled = false;
+                        spinBtn.style.opacity = '1';
+                    }
                 }, 4800);
             }, 50);
         }
@@ -810,14 +896,19 @@
         updateUI();
         generateTape();
 
-        // КОНТРОЛЬ С КРЫТИЯ ИГРОВОГО ИНТРО-ЗАСТАВКИ
+        // ФУНКЦИЯ ДЛЯ ГАРАНТИРОВАННОГО СКРЫТИЯ ЗАСТАВКИ ЗАГРУЗКИ
+        function hidePreloaderForce() {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.classList.add('preloader-hidden');
+            }
+        }
+
+        // Аварийный таймер на 3 секунды: заставка скроется в любом случае!
+        setTimeout(hidePreloaderForce, 3000);
+
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                const preloader = document.getElementById('preloader');
-                if (preloader) {
-                    preloader.classList.add('preloader-hidden');
-                }
-            }, 2600); 
+            setTimeout(hidePreloaderForce, 2600); 
         });
     </script>
 </body>
