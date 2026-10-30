@@ -711,10 +711,10 @@
                 name: "Epic Zone",
                 price: 100,
                 loot: [
-                    { icon: 'skin1.png', name: 'Charm | Chicken', value: 50, type: 'skin', count: 450 },
-                    { icon: 'skin2.png', name: 'UMP-45 | K.O. Factory', value: 100, type: 'skin', count: 250 },
-                    { icon: 'skin3.png', name: 'P90 | Scarab Rush', value: 150, type: 'skin', count: 180 },
-                    { icon: 'skin4.png', name: 'AUG | Stymphalian', value: 250, type: 'skin', count: 90 },
+                    { icon: 'skin4.png', name: 'Charm | Chicken', value: 50, type: 'skin', count: 450 },
+                    { icon: 'skin1.png', name: 'UMP-45 | K.O. Factory', value: 100, type: 'skin', count: 250 },
+                    { icon: 'skin2.png', name: 'P90 | Scarab Rush', value: 150, type: 'skin', count: 180 },
+                    { icon: 'skin3.png', name: 'AUG | Stymphalian', value: 250, type: 'skin', count: 90 },
                     { icon: 'skin5.png', name: 'AK-47 | Searing Rage', value: 1500, type: 'skin', count: 25 },
                     { icon: 'skin6.png', name: '★ Skeleton Knife | Tiger Tooth', value: 2500, type: 'skin', count: 5 }
                 ]
@@ -809,25 +809,56 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
+        // ЗАЩИЩЕННАЯ АКТИВАЦИЯ: Проверка существования кода в CloudStorage вместо слепого парсинга суммы
         function activateAdminPromo() {
             let rawCode = document.getElementById('promo-input-field').value.trim();
             rawCode = rawCode.replace(/[\r\n\x0B\x0C\x85]/g, "").trim();
 
-            function triggerPromoError() { showCustomAlert("❌ Ошибка", "Промокод недействителен или уже активирован."); }
+            function triggerPromoError() { 
+                showCustomAlert("❌ Ошибка", "Промокод недействителен, уже активирован или не существует в системе."); 
+            }
 
             if (!Array.isArray(gameState.usedPromos)) { gameState.usedPromos = []; }
-            if (!rawCode.startsWith("BOOM-") || gameState.usedPromos.includes(rawCode)) { triggerPromoError(); return; }
+            if (!rawCode.startsWith("BOOM-") || gameState.usedPromos.includes(rawCode)) { 
+                triggerPromoError(); 
+                return; 
+            }
 
             const parts = rawCode.split('-');
             if (parts.length < 4) { triggerPromoError(); return; }
             const promoAmount = parseInt(parts[parts.length - 1], 10);
             if (isNaN(promoAmount) || promoAmount <= 0) { triggerPromoError(); return; }
 
-            gameState.balance += promoAmount;
-            gameState.usedPromos.push(rawCode);
-            document.getElementById('promo-input-field').value = '';
-            saveProgress();
-            showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
+            if (tg && tg.CloudStorage) {
+                const currentBtn = event?.target;
+                if (currentBtn) currentBtn.disabled = true;
+
+                tg.CloudStorage.getItem(`global_promo_${rawCode}`, (err, value) => {
+                    if (currentBtn) currentBtn.disabled = false;
+                    
+                    if (!err && value === "active") {
+                        gameState.balance += promoAmount;
+                        gameState.usedPromos.push(rawCode);
+                        document.getElementById('promo-input-field').value = '';
+                        tg.CloudStorage.setItem(`global_promo_${rawCode}`, "used");
+                        saveProgress();
+                        showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
+                    } else {
+                        triggerPromoError();
+                    }
+                });
+            } else {
+                if (localStorage.getItem(`global_promo_${rawCode}`) === "active") {
+                    gameState.balance += promoAmount;
+                    gameState.usedPromos.push(rawCode);
+                    document.getElementById('promo-input-field').value = '';
+                    localStorage.setItem(`global_promo_${rawCode}`, "used");
+                    saveProgress();
+                    showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
+                } else {
+                    triggerPromoError();
+                }
+            }
         }
         function updateUI() {
             if (balanceDisplay) balanceDisplay.innerText = Math.floor(gameState.balance);
@@ -840,7 +871,7 @@
                 casesConfig[gameState.currentCase].loot.forEach((item) => {
                     const div = document.createElement('div');
                     if (item.type === 'skin') {
-                        // НАСТРОЕНО: Курица, Юмп, П90 и Ауг теперь все имеют красивую фиолетовую неоновую обводку
+                        // НАСТРОЕНО: Чарм, Юмп, П90 и Ауг теперь все имеют красивую фиолетовую неоновую обводку
                         let rarityClass = 'rarity-purple'; 
                         if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
                         else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
