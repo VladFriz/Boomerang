@@ -23,6 +23,7 @@
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -35,7 +36,6 @@
             top: 0;
             z-index: 100;
         }
-
         .logo {
             font-size: 24px;
             font-weight: 900;
@@ -76,6 +76,7 @@
             border-left: 4px solid #5856d6;
             padding-left: 10px;
         }
+
         .cases-category-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -83,7 +84,6 @@
             padding: 0 15px;
             margin-bottom: 25px;
         }
-
         .case-card {
             background: rgba(24, 25, 49, 0.6);
             border-radius: 20px;
@@ -149,7 +149,6 @@
             font-weight: 800;
             cursor: pointer;
         }
-
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -191,6 +190,7 @@
             height: 100%;
             will-change: transform;
         }
+
         .roulette-item {
             width: 100px;
             height: 110px;
@@ -205,15 +205,18 @@
             border: 1px solid #23254e;
         }
 
-        .roulette-item .item-emoji {
-            font-size: 36px;
-            margin-bottom: 6px;
+        /* КРУТЫЕ АДАПТИВНЫЕ СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ТВОИХ СКИНОВ */
+        .skin-photo-img {
+            width: 75px;
+            height: 55px;
+            object-fit: contain;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
         }
 
-        .roulette-item span {
-            font-size: 12px;
-            color: #9da0cb;
-            font-weight: 700;
+        .money-text-icon {
+            font-size: 36px;
+            margin-bottom: 6px;
         }
 
         .btn-open-case {
@@ -226,7 +229,6 @@
             font-size: 17px;
             cursor: pointer;
         }
-
         .profile-container {
             padding: 15px;
         }
@@ -270,6 +272,10 @@
             border-radius: 16px;
             padding: 15px 5px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .inventory-empty {
@@ -341,7 +347,6 @@
             transition: opacity 0.2s ease;
         }
 
-        .custom-alert-overlay.show { opacity: 1; pointer-events: auto; }
         .custom-alert-box {
             background: #181931; border: 2px solid #322f75; border-radius: 24px;
             padding: 30px 24px; width: 85%; max-width: 340px; text-align: center;
@@ -356,9 +361,8 @@
         }
 
         .loot-preview-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 15px; }
-        .loot-item { background: rgba(24, 25, 49, 0.4); border-radius: 14px; padding: 12px 5px; text-align: center; border: 1px solid #1c1d3a; }
-        .loot-icon { font-size: 22px; margin-bottom: 4px; display: block; }
-        .loot-item .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
+        .loot-item { background: rgba(24, 25, 49, 0.4); border-radius: 14px; padding: 12px 5px; text-align: center; border: 1px solid #1c1d3a; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loot-preview-grid .skin-photo-img { width: 50px; height: 40px; }
         
         .user-profile-header {
             display: flex;
@@ -371,27 +375,13 @@
             margin: 15px;
         }
 
-        .user-avatar {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 2px solid #5856d6;
-            object-fit: cover;
-        }
+        .user-avatar { width: 65px; height: 65px; border-radius: 50%; border: 2px solid #5856d6; object-fit: cover; }
+        .user-name { font-size: 18px; font-weight: 800; color: #ffffff; }
+        .user-role { font-size: 12px; color: #ffb800; font-weight: 700; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .user-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: #ffb800;
-            font-weight: 700;
-            margin-top: 2px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .btn-reset-data {
+            background: rgba(255, 59, 48, 0.2); color: #ff3b30; border: 1px solid #ff3b30;
+            padding: 8px 15px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; width: 100%; margin-top: 15px;
         }
     </style>
 </head>
@@ -476,10 +466,13 @@
             <div class="inventory-grid" id="inventory-container">
                 <div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>
             </div>
+
+            <!-- Кнопка очистки для обновления кэша -->
+            <button class="btn-reset-data" onclick="resetAllDataData()">⚠️ Очистить прогресс (Сбросить кэш скинов)</button>
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ -->
+    <!-- МЕНЮ НАВИГАЦИИ -->
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
             <span class="nav-icon">📦</span>Кейсы
@@ -505,16 +498,17 @@
 
         try {
             if (tg?.initDataUnsafe?.user) {
-                const u = tg.initDataUnsafe.user;
-                if (u.first_name) {
-                    document.getElementById('tg-user-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
+                const user = tg.initDataUnsafe.user;
+                if (user.first_name) {
+                    document.getElementById('tg-user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                 }
-                if (u.photo_url) {
-                    document.getElementById('tg-user-avatar').src = u.photo_url;
+                if (user.photo_url) {
+                    document.getElementById('tg-user-avatar').src = user.photo_url;
                 }
             }
         } catch (e) {}
 
+        // ТВОИ КАРТИНКИ СКИНОВ ИЗ РЕПОЗИТОРИЯ GITHUB НА СТРОКАХ НИЖЕ
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс", price: 0, loot: [
@@ -527,10 +521,12 @@
             },
             epic: {
                 name: "Epic Zone", price: 100, loot: [
-                    { icon: '🧸', name: 'Мишка', value: 24, type: 'skin', count: 400 },
-                    { icon: '💝', name: 'Сердечко', value: 24, type: 'skin', count: 350 },
-                    { icon: '🌹', name: 'Роза', value: 40, type: 'skin', count: 200 },
-                    { icon: '💎', name: 'Алмаз', value: 100, type: 'skin', count: 50 }
+                    { icon: 'skin1.png', name: 'Скин Номер 1', value: 2500, type: 'skin', count: 5 }, 
+                    { icon: 'skin2.png', name: 'Скин Номер 2', value: 1500, type: 'skin', count: 15 }, 
+                    { icon: 'skin3.png', name: 'Скин Номер 3', value: 1000, type: 'skin', count: 30 }, 
+                    { icon: 'skin4.png', name: 'Скин Номер 4', value: 500, type: 'skin', count: 100 }, 
+                    { icon: 'skin5.png', name: 'Скин Номер 5', value: 300, type: 'skin', count: 250 }, 
+                    { icon: 'skin6.png', name: 'Скин Номер 6', value: 150, type: 'skin', count: 600 }  
                 ]
             }
         };
@@ -567,7 +563,11 @@
                 casesConfig[gameState.currentCase].loot.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'loot-item';
-                    div.innerHTML = '<span class="loot-icon">' + item.icon + '</span><div class="loot-name">' + item.name + '</div>';
+                    if (item.type === 'skin') {
+                        div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'"><div class="loot-name">${item.name}</div>`;
+                    } else {
+                        div.innerHTML = `<span class="money-text-icon">${item.icon}</span><div class="loot-name">${item.name}</div>`;
+                    }
                     lp.appendChild(div);
                 });
             }
@@ -581,7 +581,11 @@
                     gameState.inventory.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'inventory-item';
-                        div.innerHTML = '<div style="font-size:32px; margin-bottom:4px;">' + item.icon + '</div><div style="font-size:12px; font-weight:700;">' + item.name + '</div>';
+                        if (item.isSkin) {
+                            div.innerHTML = `<img src="${item.icon}" style="width:60px; height:45px; object-fit:contain; margin-bottom:4px;" onerror="this.src='https://icons8.com'"><div style="font-size:12px; font-weight:700;">${item.name}</div>`;
+                        } else {
+                            div.innerHTML = `<div style="font-size:32px; margin-bottom:4px;">${item.icon}</div><div style="font-size:12px; font-weight:700;">${item.name}</div>`;
+                        }
                         inv.appendChild(div);
                     });
                 }
@@ -599,7 +603,7 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
-        // ПОЛНОСТЬЮ ИСПРАВЛЕННЫЙ ИНДЕКС МАССИВА ОДНОРАЗОВОГО ПРОМОКОДА
+        // ВЫВЕРЕННЫЙ ИСПРАВЛЕННЫЙ ОДНОРАЗОВЫЙ ПАРСЕР ПРОМОКОДОВ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
@@ -618,7 +622,7 @@
                 return; 
             }
 
-            // ПРАВИЛЬНЫЙ КЛЮЧ: Тянем число со строго 3-го индекса массива строк
+            // ПРАВИЛЬНЫЙ ИНДЕКС: Извлекаем сумму строго со 3-го индекса массива строк
             const promoAmount = parseInt(parts[3], 10);
 
             if (isNaN(promoAmount) || promoAmount <= 0) {
@@ -661,7 +665,11 @@
                 const r = balancedPool[Math.floor(Math.random() * balancedPool.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
-                item.innerHTML = '<div class="item-emoji">' + r.icon + '</div><span>' + r.name + '</span>';
+                if (r.type === 'skin') {
+                    item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'"><span>${r.name}</span>`;
+                } else {
+                    item.innerHTML = `<div class="item-emoji">${r.icon}</div><span>${r.name}</span>`;
+                }
                 item.setAttribute('data-value', r.value);
                 item.setAttribute('data-name', r.name);
                 item.setAttribute('data-icon', r.icon);
@@ -679,10 +687,7 @@
 
         function startSpin() {
             const sc = casesConfig[gameState.currentCase];
-            if (gameState.balance < sc.price) {
-                showAlert('Недостаточно средств! Кейс стоит ' + sc.price + ' ₽.');
-                return;
-            }
+            if (gameState.balance < sc.price) { showAlert('Недостаточно средств! Кейс стоит ' + sc.price + ' ₽.'); return; }
             if (spinBtn) { spinBtn.disabled = true; spinBtn.style.opacity = '0.4'; }
             gameState.balance -= sc.price;
             gameState.statsOpened += 1;
@@ -714,13 +719,18 @@
                         showAlert('Выигрыш: +' + pVal + ' ₽ зачислено на баланс!');
                     } else {
                         gameState.statsSkins += 1;
-                        gameState.inventory.push({ icon: pIcon, name: pName });
+                        gameState.inventory.push({ icon: pIcon, name: pName, isSkin: true });
                         showAlert('Отличный дроп! Предмет "' + pName + '" отправлен в инвентарь!');
                     }
                     saveProgress();
                     if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
                 }, 4800);
             }, 50);
+        }
+
+        function resetAllDataData() {
+            localStorage.clear();
+            location.reload();
         }
 
         updateUI();
