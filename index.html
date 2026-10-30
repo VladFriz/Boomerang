@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
-    <!-- Официальный скрипт Telegram Web App API -->
+    <!-- Официальный скрипт Telegram Web App -->
     <script src="https://telegram.org"></script>
     <style>
         * {
@@ -147,7 +147,6 @@
             transform: scale(0.95);
         }
 
-        /* ТВОИ НАСТРОЙКИ СВЕЧЕНИЯ ПОД ЦВЕТА ОРУЖИЯ С ТВОИХ СКИНОВ */
         .rarity-gold { 
             border: 1px solid #ffb800 !important; 
             background: radial-gradient(circle at 50% 50%, rgba(255, 184, 0, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
@@ -432,6 +431,11 @@
         .user-avatar { width: 65px; height: 65px; border-radius: 50%; border: 2px solid #5856d6; object-fit: cover; }
         .user-name { font-size: 18px; font-weight: 800; color: #ffffff; }
         .user-role { font-size: 12px; color: #ffb800; font-weight: 700; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn-reset-data {
+            background: rgba(255, 59, 48, 0.2); color: #ff3b30; border: 1px solid #ff3b30;
+            padding: 8px 15px; border-radius: 12px; font-weight: 700; font-size: 12px; cursor: pointer; width: 100%; margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -610,17 +614,15 @@
                     const div = document.createElement('div');
                     
                     if (item.type === 'skin') {
-                        // Точно сопоставляем цвета неоновой обводки и свечения со полосками редкости твоих скринов
                         let rarityClass = 'rarity-blue';
-                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';      // Золотой нож-скелет
-                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';   // Огненный AK-47
-                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';  // Фиолетовый чарм курицы
-                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';// Бронзовый AUG
-                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';// Египетский P90
-                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';// Яркий K.O. Factory UMP
+                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
+                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
+                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';
+                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';
+                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';
+                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';
                         
                         div.className = `loot-item ${rarityClass}`;
-                        // НАЗВАНИЯ ПОЛНОСТЬЮ СКРЫТЫ С САЙТА ОРОВСЮДУ — ОСТАЛИСЬ ТОЛЬКО КАРТИНКИ
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'">`;
                     } else {
                         div.className = 'loot-item rarity-blue';
@@ -661,11 +663,11 @@
             document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
-                // БАГ ИСПРАВЛЕН: Теперь сумма берётся строго из parts[3] и очищается от переносов строк \n
+        // ИСПРАВЛЕНО НАВСЕГДА: Добавлен точный индекс массива [3] для чтения абсолютно любой суммы
         function activateAdminPromo() {
             let rawCode = document.getElementById('promo-input-field').value.trim();
             
-            // Очищаем скрытые символы переноса строк
+            // Удаляем скрытые невидимые символы переноса строк Телеграма
             rawCode = rawCode.replace(/[\r\n\x0B\x0C\x85]/g, "").trim();
             
             function triggerPromoError() { 
@@ -683,7 +685,7 @@
                 return; 
             }
 
-            // ИСПРАВЛЕНО: Добавлен индекс [3] для точного взятия числа номинала промокода
+            // ИСПРАВЛЕННЫЙ ИНДЕКС: Тянем число строго с 3-го индекса массива строк (четвёртый блок кода)
             const promoAmount = parseInt(parts[3], 10);
 
             if (isNaN(promoAmount) || promoAmount <= 0) {
@@ -692,7 +694,7 @@
             }
 
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true');
+            localStorage.setItem('used_hash_' + rawCode, 'true'); // Код сгорает
             document.getElementById('promo-input-field').value = '';
             saveProgress();
             showAlert(`🎉 Успешно!\nПромокод активирован, вам начислено +${promoAmount} ₽ на игровой баланс!`);
@@ -800,4 +802,3 @@
     </script>
 </body>
 </html>
-
