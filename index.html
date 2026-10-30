@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
-    <!-- Официальный скрипт Telegram Web App -->
+    <!-- Официальный скрипт Telegram Web App API -->
     <script src="https://telegram.org"></script>
     <style>
         * {
@@ -147,7 +147,7 @@
             transform: scale(0.95);
         }
 
-        /* ТВОИ НАСТРОЙКИ СВЕЧЕНИЯ ПОД ЦВЕТА ОРУЖИЯ С ТВОИХ СКРИНШОТОВ */
+        /* ТВОИ НАСТРОЙКИ СВЕЧЕНИЯ ПОД ЦВЕТА ОРУЖИЯ С ТВОИХ СКИНОВ */
         .rarity-gold { 
             border: 1px solid #ffb800 !important; 
             background: radial-gradient(circle at 50% 50%, rgba(255, 184, 0, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
@@ -610,15 +610,17 @@
                     const div = document.createElement('div');
                     
                     if (item.type === 'skin') {
+                        // Точно сопоставляем цвета неоновой обводки и свечения со полосками редкости твоих скринов
                         let rarityClass = 'rarity-blue';
-                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';
-                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';
-                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';
-                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';
-                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';
+                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';      // Золотой нож-скелет
+                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';   // Огненный AK-47
+                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';  // Фиолетовый чарм курицы
+                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';// Бронзовый AUG
+                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';// Египетский P90
+                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';// Яркий K.O. Factory UMP
                         
                         div.className = `loot-item ${rarityClass}`;
+                        // НАЗВАНИЯ ПОЛНОСТЬЮ СКРЫТЫ С САЙТА ОРОВСЮДУ — ОСТАЛИСЬ ТОЛЬКО КАРТИНКИ
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'">`;
                     } else {
                         div.className = 'loot-item rarity-blue';
@@ -659,14 +661,36 @@
             document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
+        // ИСПРАВЛЕНО: Полная очистка скрытых символов переноса строки Телеграма (\n)
         function activateAdminPromo() {
-            const rawCode = document.getElementById('promo-input-field').value.trim();
-            function triggerPromoError() { showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно."); }
-            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) { triggerPromoError(); return; }
+            let rawCode = document.getElementById('promo-input-field').value.trim();
+            
+            // Удаляем невидимые переносы строк и пробелы, которые ломали parseInt
+            rawCode = rawCode.replace(/[\r\n\x0B\x0C\x85]/g, "").trim();
+            
+            function triggerPromoError() { 
+                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно."); 
+            }
+
+            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) { 
+                triggerPromoError(); 
+                return; 
+            }
+
             const parts = rawCode.split('-');
-            if (parts.length < 4) { triggerPromoError(); return; }
-            const promoAmount = parseInt(parts[10]);
-            if (isNaN(promoAmount) || promoAmount <= 0) { triggerPromoError(); return; }
+            if (parts.length < 4) { 
+                triggerPromoError(); 
+                return; 
+            }
+
+            // Извлекаем чистую сумму без скрытого мусора Телеграма
+            const promoAmount = parseInt(parts, 10);
+
+            if (isNaN(promoAmount) || promoAmount <= 0) {
+                triggerPromoError();
+                return;
+            }
+
             gameState.balance += promoAmount;
             localStorage.setItem('used_hash_' + rawCode, 'true');
             document.getElementById('promo-input-field').value = '';
