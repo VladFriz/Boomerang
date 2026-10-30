@@ -22,7 +22,6 @@
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
 
-        /* Шапка */
         .header {
             display: flex;
             justify-content: space-between;
@@ -67,7 +66,6 @@
             text-shadow: 0 0 8px #ffb800;
         }
 
-        /* Навигация Экранов */
         .app-screen {
             display: none;
         }
@@ -75,8 +73,6 @@
         .app-screen.active-screen {
             display: block;
         }
-
-        /* Сетка разделов */
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -129,7 +125,6 @@
             font-weight: 700;
         }
 
-        /* Рулетка */
         .roulette-view-zone {
             background: rgba(14, 15, 30, 0.7);
             border-top: 2px solid #2e3163;
@@ -211,7 +206,6 @@
             box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4);
         }
 
-        /* Профиль */
         .profile-container {
             padding: 15px;
         }
@@ -244,7 +238,6 @@
             font-weight: 600;
         }
 
-        /* Инвентарь */
         .inventory-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -269,7 +262,6 @@
             font-size: 14px;
         }
 
-        /* Нижнее Меню */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -315,7 +307,6 @@
             filter: drop-shadow(0 0 8px #5856d6);
         }
 
-        /* Кастомное уведомление */
         .custom-alert-overlay {
             position: fixed;
             top: 0;
@@ -348,17 +339,13 @@
         }
 
         .loot-preview-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 15px; }
-.loot-item { background: rgba(24, 25, 49, 0.4); border-radius: 14px; padding: 12px 5px; text-align: center; border: 1px solid #1c1d3a; }
-.loot-icon { font-size: 22px; margin-bottom: 4px; display: block; }
-.loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
----
-
-### Часть 2: Структура Вкладок и Разделы Кейсов (Средняя половина `index.html`)
-
-```html
+        .loot-item { background: rgba(24, 25, 49, 0.4); border-radius: 14px; padding: 12px 5px; text-align: center; border: 1px solid #1c1d3a; }
+        .loot-icon { font-size: 22px; margin-bottom: 4px; display: block; }
+        .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
+    </style>
+</head>
 <body>
 
-    <!-- Шапка -->
     <div class="header">
         <div class="logo">Boomerang</div>
         <div class="balance-container">
@@ -369,7 +356,6 @@
         </div>
     </div>
 
-    <!-- ЭКРАН КЕЙСОВ -->
     <div id="screen-cases" class="app-screen active-screen">
         <div class="section-title">Доступные кейсы</div>
         <div class="cases-category-grid">
@@ -390,16 +376,16 @@
             <div class="roulette-wrapper">
                 <div class="roulette-tape" id="tape"></div>
             </div>
-            <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
+            <div style="margin-top: 15px;">
+                <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
+            </div>
         </div>
 
         <div class="section-title">Содержимое кейса</div>
         <div class="loot-preview-grid" id="loot-preview-container">
-            <!-- Загружается из JS -->
         </div>
     </div>
 
-    <!-- ЭКРАН ПРОФИЛЯ -->
     <div id="screen-profile" class="app-screen">
         <div class="profile-container">
             <div class="section-title" style="margin-left:0; padding-left:10px;">Статистика профиля</div>
@@ -421,7 +407,6 @@
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
             <span class="nav-icon">📦</span>
@@ -433,14 +418,14 @@
         </button>
     </div>
 
-    <!-- Кастомное уведомление -->
     <div class="custom-alert-overlay" id="custom-alert">
         <div class="custom-alert-box">
             <div class="custom-alert-title">🎉 Поздравляем!</div>
             <div class="custom-alert-message" id="custom-alert-msg">Вы выиграли!</div>
             <button class="custom-alert-btn" onclick="closeAlert()">Отлично</button>
         </div>
-    </div>    <script>
+    </div>
+    <script>
         const casesConfig = {
             chill: {
                 name: "Бомж Кейс",
@@ -518,7 +503,6 @@
             document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active-screen'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             if(screenName === 'cases') {
-                document.getElementById('screen-cases').add('active-screen');
                 document.getElementById('screen-cases').classList.add('active-screen');
                 document.getElementById('nav-btn-cases').classList.add('active');
             } else {
