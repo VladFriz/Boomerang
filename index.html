@@ -23,7 +23,7 @@
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
-        /* СТИЛИ ЭКРАНА ЗАГРУЗКИ */
+        /* СТИЛИ ИГРОВОГО ЭКРАНА ЗАГРУЗКИ */
         #preloader {
             position: fixed;
             top: 0;
@@ -65,7 +65,6 @@
             0%, 100% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(88, 86, 214, 0.6)); }
             50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(255, 184, 0, 0.9)); }
         }
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -78,6 +77,7 @@
             top: 0;
             z-index: 100;
         }
+
         .logo {
             font-size: 24px;
             font-weight: 900;
@@ -117,40 +117,6 @@
             display: block;
         }
 
-        .user-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(24, 25, 49, 0.5);
-            border: 1px solid #1f2142;
-            padding: 15px;
-            border-radius: 20px;
-            margin: 15px;
-        }
-
-        .user-avatar {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 2px solid #5856d6;
-            box-shadow: 0 0 15px rgba(88, 86, 214, 0.4);
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .user-role {
-            font-size: 12px;
-            color: #ffb800;
-            font-weight: 700;
-            margin-top: 2px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -202,7 +168,6 @@
             color: #ffb800;
             font-weight: 700;
         }
-
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
             border: 1px solid #1f2142;
@@ -319,6 +284,40 @@
             box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4);
         }
 
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(24, 25, 49, 0.5);
+            border: 1px solid #1f2142;
+            padding: 15px;
+            border-radius: 20px;
+            margin: 15px;
+        }
+
+        .user-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 2px solid #5856d6;
+            box-shadow: 0 0 15px rgba(88, 86, 214, 0.4);
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #ffb800;
+            font-weight: 700;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         .profile-container {
             padding: 5px 15px;
         }
@@ -489,7 +488,7 @@
             </div>
         </div>
 
-        <div class="roulette-view-zone">
+        <div class="rou roulette-view-zone">
             <div class="case-card-title" id="current-case-name" style="font-size: 20px; margin-top:0;">Текущий кейс: Бомж Кейс</div>
             <div class="roulette-wrapper">
                 <div class="roulette-tape" id="tape"></div>
@@ -656,7 +655,7 @@
                 });
             }
         }
-               function showScreen(screenName) {
+        function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
             document.getElementById('screen-deposit').style.display = 'none';
@@ -668,7 +667,7 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
-        // ИСПРАВЛЕННАЯ СИСТЕМА ЧТЕНИЯ МАССИВОВ КРИПТО-КОДОВ
+        // ВЕРИФИКАЦИЯ ОДНОРАЗОВЫХ СЕКРЕТНЫХ КРИПТО-КОДОВ (МАССИВЫ ПОЛНОСТЬЮ ИСПРАВЛЕНЫ)
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
             
@@ -691,7 +690,7 @@
                 return;
             }
 
-            // ИСПРАВЛЕНО: Четко берем 2-й и 3-й индексы массива для парсинга чисел
+            // ПОЧИНЕНО: Правильный выбор индексов элементов массива для парсинга чисел
             const promoAmount = parseInt(parts[2], 10);
             const receivedChecksum = parseInt(parts[3], 10);
             
@@ -811,7 +810,7 @@
         updateUI();
         generateTape();
 
-        // НАДЕЖНОЕ СКРЫТИЕ ЗАСТАВКИ
+        // КОНТРОЛЬ С КРЫТИЯ ИГРОВОГО ИНТРО-ЗАСТАВКИ
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const preloader = document.getElementById('preloader');
