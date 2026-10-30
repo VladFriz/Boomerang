@@ -885,7 +885,7 @@
             saveProgress();
             showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено: ${promoAmount} ₽.`);
         }
-        function switchCase(caseKey) {
+                function switchCase(caseKey) {
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
             
@@ -919,7 +919,7 @@
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
                 if (r.type === 'skin') {
-                    item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='skin1.png'">`;
+                    item.innerHTML = `<img src="${r.icon}" class="skin-photo-img" onerror="this.src='https://placehold.co'">`;
                 } else {
                     item.innerHTML = `<div class="item-emoji" style="font-size:30px;">${r.icon}</div>`;
                 }
@@ -975,33 +975,43 @@
                 }
 
                 setTimeout(() => {
-                    if (!tape) return;
-                    const wi = tape.children[targetIndex];
-                    const pVal = parseInt(wi.getAttribute('data-value'), 10);
-                    const pName = wi.getAttribute('data-name');
-                    const pIcon = wi.getAttribute('data-icon');
-                    const pType = wi.getAttribute('data-type');
-
-                    if (pType === 'money') {
-                        gameState.balance += pVal;
-                        showCustomAlert("🎉 Вы выиграли!", `Вам успешно начислено на баланс: ${pVal} ₽.`);
-                    } else {
-                        gameState.statsSkins += 1;
-                        const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-                        gameState.inventory.push({ id: uniqueId, icon: pIcon, name: pName, value: pVal, isSkin: true });
-                        
-                        // Полноэкранный взрыв искр при редком выигрыше
-                        const explosion = document.getElementById('win-explosion');
-                        if (explosion) {
-                            if (pIcon === 'skin6.png') { explosion.className = "win-explosion-overlay spark-gold"; } 
-                            else if (pIcon === 'skin5.png') { explosion.className = "win-explosion-overlay spark-red"; }
-                            setTimeout(() => explosion.className = "win-explosion-overlay", 1500);
+                    // НАЧАЛО ЗАЩИЩЕННОГО БЛОКА ОТ ЗАВИСАНИЙ
+                    try {
+                        if (!tape || !tape.children[targetIndex]) {
+                            if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
+                            return;
                         }
+                        const wi = tape.children[targetIndex];
+                        const pVal = parseInt(wi.getAttribute('data-value'), 10);
+                        const pName = wi.getAttribute('data-name');
+                        const pIcon = wi.getAttribute('data-icon');
+                        const pType = wi.getAttribute('data-type');
 
-                        showCustomAlert("🎉 Вы выиграли!", `Отличный дроп! Скин "${pName}" добавлен в твой инвентарь.`);
+                        if (pType === 'money') {
+                            gameState.balance += pVal;
+                            showCustomAlert("🎉 Вы выиграли!", `Вам успешно начислено на баланс: ${pVal} ₽.`);
+                        } else {
+                            gameState.statsSkins += 1;
+                            const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+                            gameState.inventory.push({ id: uniqueId, icon: pIcon, name: pName, value: pVal, isSkin: true });
+                            
+                            // Защищенный вызов анимации вспышки
+                            const explosion = document.getElementById('win-explosion');
+                            if (explosion) {
+                                if (pIcon === 'skin6.png') { explosion.className = "win-explosion-overlay spark-gold"; } 
+                                else if (pIcon === 'skin5.png') { explosion.className = "win-explosion-overlay spark-red"; }
+                                setTimeout(() => { if(explosion) explosion.className = "win-explosion-overlay"; }, 1500);
+                            }
+
+                            showCustomAlert("🎉 Вы выиграли!", `Отличный дроп! Скин "${pName}" добавлен в твой инвентарь.`);
+                        }
+                        saveProgress();
+                    } catch (error) {
+                        console.error("Критическая ошибка финала рулетки, спасаем интерфейс:", error);
+                    } finally {
+                        // ЭТОТ БЛОК ВЫПОЛНИТСЯ ПРИ ЛЮБЫХ ОБСТОЯТЕЛЬСТВАХ И РАЗБЛОКИРУЕТ КНОПКИ
+                        if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
                     }
-                    saveProgress();
-                    if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
                 }, 4800);
             }, 50);
         }
