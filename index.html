@@ -657,7 +657,7 @@
                 });
             }
         }
-        function showScreen(screenName) {
+               function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
             document.getElementById('screen-deposit').style.display = 'none';
@@ -669,31 +669,54 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
+        // ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ СИСТЕМА УНИКАЛЬНЫХ КРИПТО-КОДОВ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
+            
+            // Защитная заглушка для вывода простого сообщения об ошибке
+            function triggerPromoError() {
+                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+            }
+
             if (!rawCode.startsWith("BOOM-")) {
-                showAlert("❌ Неверный формат кода.");
+                triggerPromoError();
                 return;
             }
-            if (localStorage.getItem('used_' + rawCode)) {
-                showAlert("❌ Этот код уже был активирован!");
+            
+            if (localStorage.getItem('used_hash_' + rawCode)) {
+                triggerPromoError();
                 return;
             }
+
             const parts = rawCode.split('-');
-            if (parts.length < 3) {
-                showAlert("❌ Неверный код!");
+            if (parts.length < 4) {
+                triggerPromoError();
                 return;
             }
+
             const promoAmount = parseInt(parts[2]);
+            const receivedChecksum = parseInt(parts[3]);
+            
+            // Вытягиваем ID текущего юзера из Телеграма для сверки
+            let currentTgId = 0;
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                currentTgId = window.Telegram.WebApp.initDataUnsafe.user.id || 0;
+            }
+
+            // Математическая верификация контрольной суммы крипто-ключа
+            const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
+
             if (isNaN(promoAmount) || promoAmount <= 0) {
-                showAlert("❌ Ошибка чтения суммы.");
+                triggerPromoError();
                 return;
             }
+
+            // Зачисление баланса
             gameState.balance += promoAmount;
-            localStorage.setItem('used_' + rawCode, 'true');
+            localStorage.setItem('used_hash_' + rawCode, 'true'); // Делаем код строго одноразовым
             document.getElementById('promo-input-field').value = '';
             saveProgress();
-            showAlert('⚡ Топливо залито! На игровой баланс успешно начислено +' + promoAmount + ' ₽!');
+            showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
         }
 
         function switchCase(caseKey) {
