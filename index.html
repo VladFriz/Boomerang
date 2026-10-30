@@ -337,9 +337,14 @@
             <div class="item-name">Сердечко</div>
             <div class="item-price">24 ₽</div>
         </div>
+        <div class="grid-item">
+            <span class="item-icon">🌹</span>
+            <div class="item-name">Роза</div>
+            <div class="item-price">40 ₽</div>
+        </div>
+    </div>
 
     <script>
-        // Список возможных призов для рулетки
         const prizePool = [
             { icon: '🪙', name: '1 ₽', value: 1 },
             { icon: '🪙', name: '3 ₽', value: 3 },
@@ -353,9 +358,8 @@
         const tape = document.getElementById('tape');
         const spinBtn = document.getElementById('spin-btn');
         const balanceDisplay = document.getElementById('user-balance');
-        const itemWidth = 112; // 100px ширина карточки + 12px внешние отступы
+        const itemWidth = 112; 
 
-        // Функция плавной генерации ленты со случайными предметами
         function generateTape() {
             tape.innerHTML = '';
             for (let i = 0; i < 45; i++) {
@@ -369,10 +373,8 @@
             }
         }
 
-        // Первичный запуск отрисовки элементов внутри колеса
         generateTape();
 
-        // Основная функция запуска анимации прокрутки кейса
         function startSpin() {
             spinBtn.disabled = true;
             spinBtn.style.animation = 'none';
@@ -385,8 +387,6 @@
             setTimeout(() => {
                 const targetIndex = 32; 
                 const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
-                
-                // Случайное микро-смещение, чтобы маркер не останавливался идеально по центру каждый раз
                 const randomShift = Math.floor(Math.random() * 40) - 20; 
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
@@ -413,7 +413,6 @@
             }, 50);
         }
 
-        // Функция запуска обратного отсчета 24 часов после открытия
         function startTimer() {
             let timeLeft = 24 * 60 * 60; 
             const timerText = document.getElementById('timer-text');
