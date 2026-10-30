@@ -405,7 +405,7 @@
         <div class="loot-preview-grid" id="loot-preview-container"></div>
     </div>
 
-    <!-- ЭКРАН ТОПЛИВА -->
+    <!-- ЭКРАН ТОПЛИВА (ПРОМОКОДЫ) -->
     <div id="screen-deposit" class="app-screen">
         <div class="section-title">Активация Топлива</div>
         <div class="promo-input-box">
@@ -448,6 +448,7 @@
         </div>
     </div>
 
+    <!-- ПАНЕЛЬ МЕНЮ -->
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
             <span class="nav-icon">📦</span>Кейсы
@@ -567,22 +568,34 @@
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
 
+        // НОВАЯ ОДНОРАЗОВАЯ СИСТЕМА ПРОМОКОДОВ (МАССИВ ПОЛНОСТЬЮ ИСПРАВЛЕН)
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
+            
+            function triggerPromoError() {
+                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+            }
+
             if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) {
-                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+                triggerPromoError();
                 return;
             }
+
             const parts = rawCode.split('-');
-            if (parts.length < 4) { showAlert("❌ Ошибка. Код недействителен."); return; }
-            const promoAmount = parseInt(parts, 10);
-            const receivedChecksum = parseInt(parts, 10);
-            let currentTgId = tg?.initDataUnsafe?.user?.id || 0;
-            const expectedChecksum = (currentTgId + promoAmount + 777) % 9999;
-            if (isNaN(promoAmount) || promoAmount <= 0 || receivedChecksum !== expectedChecksum) {
-                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
+            if (parts.length < 4) { 
+                triggerPromoError(); 
+                return; 
+            }
+
+            // Извлекаем сумму номинала из последнего блока (индекс 3)
+            const promoAmount = parseInt(parts[3], 10);
+
+            if (isNaN(promoAmount) || promoAmount <= 0) {
+                triggerPromoError();
                 return;
             }
+
+            // Начисляем валюту и блокируем код
             gameState.balance += promoAmount;
             localStorage.setItem('used_hash_' + rawCode, 'true');
             document.getElementById('promo-input-field').value = '';
