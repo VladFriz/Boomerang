@@ -317,7 +317,7 @@
 
         .inventory-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Сетка по 2 элемента удобна для кнопки продажи */
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
@@ -333,7 +333,6 @@
             justify-content: center;
         }
 
-        /* Кнопка мгновенной продажи скина за рубли */
         .btn-sell-skin {
             background: rgba(255, 184, 0, 0.15);
             color: #ffb800;
@@ -357,7 +356,6 @@
             font-size: 14px;
         }
 
-        /* Текстовый аватар, если у игрока скрыто фото в Telegram */
         .text-avatar-fallback {
             width: 65px; height: 65px; border-radius: 50%; border: 2px solid #5856d6;
             background: linear-gradient(135deg, #5856d6 0%, #2e2cbd 100%);
@@ -512,7 +510,6 @@
     <!-- ЭКРАН ПРОФИЛЯ -->
     <div id="screen-profile" class="app-screen">
         <div class="user-profile-header">
-            <!-- Элементы аватарок: картинка и текстовый дублер, если фото пустое -->
             <img src="" id="tg-user-avatar" class="user-avatar" alt="Avatar">
             <div id="tg-text-avatar" class="text-avatar-fallback">B</div>
             <div>
@@ -567,7 +564,6 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // УМНОЕ ОПРЕДЕЛЕНИЕ АВАТАРКИ И ИМЕНИ (С ТЕКСТОВЫМ ФОЛБЭКОМ ЕСЛИ НА ПК ПУСТО)
         try {
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const u = tg.initDataUnsafe.user;
@@ -613,7 +609,6 @@
         const balanceDisplay = document.getElementById('user-balance');
         const itemWidth = 112;
 
-        // ОБНОВЛЕННЫЙ СОЧНЫЙ И ОБЪЕМНЫЙ ЗВУК ТРЕНИЯ БАРАБАНА С ЗАТУХАНИЕМ
         function playTickSound(tickNum) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -623,7 +618,6 @@
                 const gain = ctx.createGain();
                 
                 osc.type = 'sine';
-                // Частота звука плавно снижается по мере приближения к финальной остановке ленты
                 const baseFreq = Math.max(50, 160 - (tickNum * 3));
                 osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.05);
@@ -637,7 +631,6 @@
                 osc.stop(ctx.currentTime + 0.05);
             } catch(e) {}
         }
-        // СОХРАНЕНИЕ В ОБЛАКО ТЕЛЕГРАМА (ДЛЯ ВСЕХ УСТРОЙСТВ ПК/ТЕЛЕФОН)
         function saveProgress() {
             updateUI();
             if (tg && tg.CloudStorage) {
@@ -655,7 +648,6 @@
             }
         }
 
-        // ЗАГРУЗКА ИЗ ОБЛАКА ТЕЛЕГРАМА ПРИ СТАРТЕ НА ЛЮБОМ УСТРОЙСТВЕ
         function loadProgressFromCloud() {
             if (tg && tg.CloudStorage) {
                 tg.CloudStorage.getItems(['bm_balance', 'bm_stats_opened', 'bm_stats_skins', 'bm_inventory', 'bm_used_promos'], (err, res) => {
@@ -680,7 +672,6 @@
             }
         }
 
-        // ФУНКЦИЯ МГНОВЕННОЙ ПРОДАЖИ ВЫБИТОГО СКИНА ЗА РУБЛИ
         function sellSkin(uniqueId, price, name) {
             gameState.inventory = gameState.inventory.filter(item => item.id !== uniqueId);
             gameState.balance += price;
@@ -752,7 +743,7 @@
             document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
-        // ОБЛАЧНАЯ ПРОВЕРКА ПРОМОКОДОВ ДЛЯ ВСЕХ УСТРОЙСТВ ОДНОВРЕМЕННО
+        // ИСПРАВЛЕНО: Защита от задержки ответа CloudStorage при сверке промокодов
         function activateAdminPromo() {
             let rawCode = document.getElementById('promo-input-field').value.trim();
             rawCode = rawCode.replace(/[\r\n\x0B\x0C\x85]/g, "").trim();
@@ -761,7 +752,11 @@
                 showCustomAlert("❌ Ошибка", "Промокод недействителен, уже активирован вами ранее или введён неверно.");
             }
 
-            // Кроссплатформенная сверка по массиву из CloudStorage
+            // Гарантируем корректный формат массива использованных промокодов
+            if (!gameState.usedPromos || !Array.isArray(gameState.usedPromos)) {
+                gameState.usedPromos = JSON.parse(localStorage.getItem('bm_used_promos')) || [];
+            }
+
             if (!rawCode.startsWith("BOOM-") || gameState.usedPromos.includes(rawCode)) {
                 triggerPromoError();
                 return;
@@ -769,14 +764,14 @@
 
             const parts = rawCode.split('-');
             if (parts.length < 4) { triggerPromoError(); return; }
-            const promoAmount = parseInt(parts, 10);
+            const promoAmount = parseInt(parts[parts.length - 1], 10);
             if (isNaN(promoAmount) || promoAmount <= 0) { triggerPromoError(); return; }
 
             gameState.balance += promoAmount;
-            gameState.usedPromos.push(rawCode); // Заносим код в глобальный стейт аккаунта
+            gameState.usedPromos.push(rawCode);
             document.getElementById('promo-input-field').value = '';
             saveProgress();
-            showCustomAlert("🎉 Успешно!", `Вы успешно активировали промокод!\nВам начислено +${promoAmount} ₽ на общий игровой баланс!`);
+            showCustomAlert("🎉 Вы выиграли!", `Промокод успешно активирован!\nВам начислено +${promoAmount} ₽ на общий игровой баланс!`);
         }
 
         function switchCase(caseKey) {
@@ -844,7 +839,6 @@
                 const randomShift = Math.floor(Math.random() * 40) - 20;
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
-                // РЕНДЕРИНГ ЗВУКОВЫХ ТИКОВ В ЗАВИСИМОСТИ ОТ ТЕКУЩЕЙ СКОРОСТИ
                 let currentTick = 0;
                 const totalTicks = 38;
                 const intervalId = setInterval(() => {
@@ -866,13 +860,11 @@
                     const pIcon = wi.getAttribute('data-icon');
                     const pType = wi.getAttribute('data-type');
                     
-                    // ОБНОВЛЕННЫЕ ДИАЛОГОВЫЕ ОКНА С ФОРМАТOМ ВЫ ВЫИГРАЛИ
                     if (pType === 'money') {
                         gameState.balance += pVal;
                         showCustomAlert("🎉 Вы выиграли!", `Выигрыш успешно начислен на баланс! +${pVal} ₽`);
                     } else {
                         gameState.statsSkins += 1;
-                        // Генерируем уникальный ID для возможности точечной продажи одинаковых скинов
                         const uniqueId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
                         gameState.inventory.push({ id: uniqueId, icon: pIcon, name: pName, value: pVal, isSkin: true });
                         showCustomAlert("🎉 Вы выиграли!", `Отличный дроп!\nПредмет "${pName}" успешно добавлен в твой инвентарь в Профиле!`);
