@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Boomerang Mini App</title>
-    <!-- Официальный скрипт Telegram Web App -->
+    <!-- Официальный скрипт Telegram Web App API -->
     <script src="https://telegram.org"></script>
     <style>
         * {
@@ -147,26 +147,31 @@
             transform: scale(0.95);
         }
 
-        /* Эффекты неонового свечения Glow по уровням редкости предметов */
+        /* ТВОИ НАСТРОЙКИ СВЕЧЕНИЯ ПОД ЦВЕТА ОРУЖИЯ С ТВОИХ СКИНОВ */
         .rarity-gold { 
-            border: 1px solid #ffb800; 
-            box-shadow: inset 0 -15px 20px rgba(255, 184, 0, 0.15), 0 4px 15px rgba(255, 184, 0, 0.1); 
+            border: 1px solid #ffb800 !important; 
+            background: radial-gradient(circle at 50% 50%, rgba(255, 184, 0, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
+            box-shadow: 0 4px 20px rgba(255, 184, 0, 0.25) !important; 
         }
         .rarity-red { 
-            border: 1px solid #eb3b5a; 
-            box-shadow: inset 0 -15px 20px rgba(235, 59, 90, 0.15), 0 4px 15px rgba(235, 59, 90, 0.1); 
+            border: 1px solid #eb3b5a !important; 
+            background: radial-gradient(circle at 50% 50%, rgba(235, 59, 90, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
+            box-shadow: 0 4px 20px rgba(235, 59, 90, 0.25) !important; 
         }
         .rarity-pink { 
-            border: 1px solid #fd79a8; 
-            box-shadow: inset 0 -15px 20px rgba(253, 121, 168, 0.15), 0 4px 15px rgba(253, 121, 168, 0.1); 
+            border: 1px solid #fd79a8 !important; 
+            background: radial-gradient(circle at 50% 50%, rgba(253, 121, 168, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
+            box-shadow: 0 4px 20px rgba(253, 121, 168, 0.25) !important; 
         }
         .rarity-purple { 
-            border: 1px solid #a55eea; 
-            box-shadow: inset 0 -15px 20px rgba(165, 94, 234, 0.15), 0 4px 15px rgba(165, 94, 234, 0.1); 
+            border: 1px solid #a55eea !important; 
+            background: radial-gradient(circle at 50% 50%, rgba(165, 94, 234, 0.2) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
+            box-shadow: 0 4px 20px rgba(165, 94, 234, 0.25) !important; 
         }
         .rarity-blue { 
-            border: 1px solid #45aaf2; 
-            box-shadow: inset 0 -15px 20px rgba(69, 170, 242, 0.1), 0 4px 10px rgba(69, 170, 242, 0.05); 
+            border: 1px solid #45aaf2 !important; 
+            background: radial-gradient(circle at 50% 50%, rgba(69, 170, 242, 0.15) 0%, rgba(17, 18, 38, 0.8) 75%) !important;
+            box-shadow: 0 4px 15px rgba(69, 170, 242, 0.15) !important; 
         }
         .promo-input-box {
             background: rgba(24, 25, 49, 0.6);
@@ -256,7 +261,6 @@
             flex-shrink: 0;
             border: 1px solid #23254e;
         }
-
         .skin-photo-img {
             width: 75px;
             height: 55px;
@@ -280,6 +284,7 @@
             font-size: 17px;
             cursor: pointer;
         }
+
         .profile-container {
             padding: 15px;
         }
@@ -605,13 +610,17 @@
                     const div = document.createElement('div');
                     
                     if (item.type === 'skin') {
+                        // Точно сопоставляем цвета неоновой обводки и свечения со полосками редкости твоих скринов
                         let rarityClass = 'rarity-blue';
-                        if (index === 0) rarityClass = 'rarity-gold';
-                        else if (index === 1) rarityClass = 'rarity-red';
-                        else if (index === 2) rarityClass = 'rarity-pink';
-                        else if (index === 3) rarityClass = 'rarity-purple';
+                        if (item.icon === 'skin6.png') rarityClass = 'rarity-gold';      // Золотой нож-скелет
+                        else if (item.icon === 'skin5.png') rarityClass = 'rarity-red';   // Огненный AK-47
+                        else if (item.icon === 'skin4.png') rarityClass = 'rarity-pink';  // Фиолетовый чарм курицы
+                        else if (item.icon === 'skin3.png') rarityClass = 'rarity-purple';// Бронзовый AUG
+                        else if (item.icon === 'skin2.png') rarityClass = 'rarity-purple';// Египетский P90
+                        else if (item.icon === 'skin1.png') rarityClass = 'rarity-purple';// Яркий K.O. Factory UMP
                         
                         div.className = `loot-item ${rarityClass}`;
+                        // НАЗВАНИЯ ПОЛНОСТЬЮ СКРЫТЫ С САЙТА ОРОВСЮДУ — ОСТАЛИСЬ ТОЛЬКО КАРТИНКИ
                         div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'">`;
                     } else {
                         div.className = 'loot-item rarity-blue';
@@ -687,6 +696,7 @@
             });
         }
 
+        // ТЕКСТ ВНУТРИ КРУТЯЩЕЙСЯ ЛЕНТЫ РУЛЕТКИ ТАКЖЕ ПОЛНОСТЬЮ СКРЫТ
         function generateTape() {
             buildBalancedPool();
             if (!tape) return;
