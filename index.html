@@ -17,7 +17,7 @@
             background-color: #0b0c16;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding-bottom: 40px;
+            padding-bottom: 90px;
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
@@ -65,6 +65,15 @@
         .balance-icon {
             color: #ffb800;
             text-shadow: 0 0 8px #ffb800;
+        }
+
+        /* Навигация Экранов */
+        .app-screen {
+            display: none;
+        }
+
+        .app-screen.active-screen {
+            display: block;
         }
 
         /* Сетка разделов */
@@ -203,13 +212,112 @@
             animation: pulse 2s infinite ease-in-out;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4); }
-            50% { box-shadow: 0 6px 30px rgba(255, 144, 0, 0.7); }
-            100% { box-shadow: 0 6px 20px rgba(255, 144, 0, 0.4); }
+        /* Элементы профиля */
+        .profile-container {
+            padding: 15px;
         }
 
-        /* Кастомное модальное окно уведомления */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(24, 25, 49, 0.6);
+            border: 1px solid #1f2142;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 900;
+            color: #ffb800;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #8f8daf;
+            font-weight: 600;
+        }
+
+        /* Инвентарь (Скины) */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .inventory-item {
+            background: linear-gradient(135deg, #1c1d3a 0%, #14152d 100%);
+            border: 1px solid #2e3163;
+            border-radius: 16px;
+            padding: 15px 5px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .inventory-empty {
+            grid-column: span 3;
+            text-align: center;
+            color: #636594;
+            padding: 40px 0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Нижняя навигационная панель */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(24, 25, 49, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #1f2142;
+            z-index: 150;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #636594;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 25%;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .nav-item.active {
+            color: #ffffff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #5856d6;
+            filter: drop-shadow(0 0 8px #5856d6);
+        }
+
+        /* Уведомления */
         .custom-alert-overlay {
             position: fixed;
             top: 0;
@@ -227,77 +335,27 @@
             transition: opacity 0.3s ease;
         }
 
-        .custom-alert-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .custom-alert-overlay.show { opacity: 1; pointer-events: auto; }
         .custom-alert-box {
-            background: #181931;
-            border: 2px solid #322f75;
-            border-radius: 24px;
-            padding: 30px 24px;
-            width: 85%;
-            max-width: 340px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(88, 86, 214, 0.3);
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
+            background: #181931; border: 2px solid #322f75; border-radius: 24px;
+            padding: 30px 24px; width: 85%; max-width: 340px; text-align: center;
+            box-shadow: 0 10px 30px rgba(88, 86, 214, 0.3); transform: scale(0.8); transition: transform 0.3s ease;
         }
-
-        .custom-alert-overlay.show .custom-alert-box {
-            transform: scale(1);
-        }
-
-        .custom-alert-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #ffb800;
-            margin-bottom: 12px;
-            text-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
-        }
-
-        .custom-alert-message {
-            font-size: 16px;
-            color: #ffffff;
-            font-weight: 600;
-            margin-bottom: 24px;
-            line-height: 1.4;
-        }
-
+        .custom-alert-overlay.show .custom-alert-box { transform: scale(1); }
+        .custom-alert-title { font-size: 22px; font-weight: 900; color: #ffb800; margin-bottom: 12px; }
+        .custom-alert-message { font-size: 16px; color: #ffffff; font-weight: 600; margin-bottom: 24px; }
         .custom-alert-btn {
             background: linear-gradient(135deg, #5856d6 0%, #403ebd 100%);
-            color: white;
-            border: none;
-            padding: 12px 35px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(88, 86, 214, 0.4);
-            width: 100%;
+            color: white; border: none; padding: 12px 35px; border-radius: 14px; font-weight: 800; width: 100%;
         }
 
-        /* Список лута */
-        .loot-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            padding: 0 15px;
-        }
+        .loot-preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 0 15px; }
+---
 
-        .loot-item {
-            background: rgba(24, 25, 49, 0.4);
-            border-radius: 14px;
-            padding: 12px 5px;
-            text-align: center;
-            border: 1px solid #1c1d3a;
-        }
+### Часть 2: Структура Вкладок и Кнопки Меню (Средняя половина `index.html`)
+*Вставьте этот код на GitHub сразу же вслед за Первой частью. Он делит приложение на два экрана (Кейсы и Профиль) и выводит панель снизу.*
 
-        .loot-icon { font-size: 24px; margin-bottom: 4px; display: block; }
-        .loot-name { font-size: 11px; color: #b3b6db; font-weight: 700; }
-    </style>
-</head>
+```html
 <body>
 
     <!-- Шапка -->
@@ -311,73 +369,195 @@
         </div>
     </div>
 
-    <!-- РАЗДЕЛЫ КЕЙСОВ -->
-    <div class="section-title">Доступные кейсы</div>
-    <div class="cases-category-grid">
-        <div class="case-card active">
-            <img src="image.png" onerror="this.src='https://ibb.co'" alt="Бомж Кейс">
-            <div class="case-card-title">Бомж Кейс</div>
-            <div class="case-card-price">Бесплатно</div>
+    <!-- ЭКРАН КЕЙСОВ -->
+    <div id="screen-cases" class="app-screen active-screen">
+        <div class="section-title">Доступные кейсы</div>
+        <div class="cases-category-grid">
+            <div class="case-card active" onclick="switchCase('chill')">
+                <img src="image.png" onerror="this.src='https://ibb.co'" alt="Chill Flame">
+                <div class="case-card-title">Chill Flame</div>
+                <div class="case-card-price">Бесплатно</div>
+            </div>
+            <div class="case-card" onclick="switchCase('epic')">
+                <img src="https://ibb.co" onerror="this.src='https://ibb.co'" alt="Epic Zone">
+                <div class="case-card-title">Epic Zone</div>
+                <div class="case-card-price">100 ₽</div>
+            </div>
         </div>
-        
-        <div class="case-card" style="opacity: 0.5; filter: grayscale(1);">
-            <img src="https://ibb.co" onerror="this.src='https://ibb.co'" alt="Армейский">
-            <div class="case-card-title">Premium</div>
-            <div class="case-card-price">Скоро в игре</div>
+
+        <div class="roulette-view-zone">
+            <div class="case-card-title" id="current-case-name" style="font-size: 20px; margin-top:0;">Текущий кейс: Chill Flame</div>
+            <div class="roulette-wrapper">
+                <div class="roulette-tape" id="tape"></div>
+            </div>
+            <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
+        </div>
+
+        <div class="section-title">Содержимое кейса</div>
+        <div class="loot-preview-grid" id="loot-preview-container">
+            <!-- Сюда динамически подгрузится содержимое текущего кейса -->
         </div>
     </div>
 
-    <!-- ИГРОВАЯ ЗОНА РУЛЕТКИ -->
-    <div class="roulette-view-zone">
-        <div class="case-card-title" style="font-size: 20px; margin-top:0;">Текущий кейс: Бомж Кейс</div>
-        <div class="roulette-wrapper">
-            <div class="roulette-tape" id="tape"></div>
+    <!-- ЭКРАН ПРОФИЛЯ -->
+    <div id="screen-profile" class="app-screen">
+        <div class="profile-container">
+            <div class="section-title" style="margin-left:0; padding-left:10px;">Статистика профиля</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-opened">0</div>
+                    <div class="stat-label">Открыто кейсов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-skins">0</div>
+                    <div class="stat-label">Выбито предметов</div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-left:0; padding-left:10px;">Твой инвентарь (Подарки)</div>
+            <div class="inventory-grid" id="inventory-container">
+                <div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>
+            </div>
         </div>
-        <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
     </div>
 
-    <!-- ТЕКУЩИЙ ЛУТ (ПРОЦЕНТЫ ПОЛНОСТЬЮ УБРАНЫ) -->
-    <div class="section-title">Содержимое кейса</div>
-    <div class="loot-preview-grid">
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">1 ₽</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">2 ₽</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">3 ₽</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">5 ₽</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">10 ₽</div></div>
+    <!-- НИЖНЯЯ ПАНЕЛЬ МЕНЮ -->
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-btn-cases" onclick="showScreen('cases')">
+            <span class="nav-icon">📦</span>
+            Кейсы
+        </button>
+        <button class="nav-item" id="nav-btn-profile" onclick="showScreen('profile')">
+            <span class="nav-icon">👤</span>
+            Профиль
+        </button>
     </div>
 
-    <!-- Новое кастомное уведомление -->
+    <!-- Кастомное уведомление выигрыша -->
     <div class="custom-alert-overlay" id="custom-alert">
         <div class="custom-alert-box">
             <div class="custom-alert-title">🎉 Поздравляем!</div>
             <div class="custom-alert-message" id="custom-alert-msg">Вы выиграли!</div>
             <button class="custom-alert-btn" onclick="closeAlert()">Отлично</button>
         </div>
-    </div>
-    <script>
-        // Математическая точность пула призов: 
-        // 1 рубль - 98%, 2 рубля - 1%, 3 рубля - 0.5%, 5 рублей - 0.4%, 10 рублей - 0.1%
-        const prizeConfig = [
-            { icon: '🪙', name: '1 ₽', value: 1, count: 980 },
-            { icon: '🪙', name: '2 ₽', value: 2, count: 10 },
-            { icon: '🪙', name: '3 ₽', value: 3, count: 5 },
-            { icon: '🪙', name: '5 ₽', value: 5, count: 4 },
-            { icon: '🪙', name: '10 ₽', value: 10, count: 1 }
-        ];
-
-        let balancedPool = [];
-        prizeConfig.forEach(p => {
-            for(let i = 0; i < p.count; i++) {
-                balancedPool.push({ icon: p.icon, name: p.name, value: p.value });
+    </div>    <script>
+        // Конфигурация кейсов и лута
+        const casesConfig = {
+            chill: {
+                name: "Chill Flame",
+                price: 0,
+                loot: [
+                    { icon: '🪙', name: '1 ₽', value: 1, type: 'money', count: 980 },
+                    { icon: '🪙', name: '2 ₽', value: 2, type: 'money', count: 10 },
+                    { icon: '🪙', name: '3 ₽', value: 3, type: 'money', count: 5 },
+                    { icon: '🪙', name: '5 ₽', value: 5, type: 'money', count: 4 },
+                    { icon: '🪙', name: '10 ₽', value: 10, count: 1 }
+                ]
+            },
+            epic: {
+                name: "Epic Zone",
+                price: 100,
+                loot: [
+                    { icon: '🧸', name: 'Мишка', value: 24, type: 'skin', count: 400 },
+                    { icon: '💝', name: 'Сердечко', value: 24, type: 'skin', count: 350 },
+                    { icon: '🌹', name: 'Роза', value: 40, type: 'skin', count: 200 },
+                    { icon: '💎', name: 'Алмаз', value: 100, type: 'skin', count: 50 }
+                ]
             }
-        });
+        };
+
+        // Глобальное состояние игры (с подгрузкой из localStorage)
+        let gameState = {
+            balance: parseInt(localStorage.getItem('bm_balance')) || 0,
+            statsOpened: parseInt(localStorage.getItem('bm_stats_opened')) || 0,
+            statsSkins: parseInt(localStorage.getItem('bm_stats_skins')) || 0,
+            inventory: JSON.parse(localStorage.getItem('bm_inventory')) || [],
+            currentCase: 'chill'
+        };
 
         const tape = document.getElementById('tape');
         const spinBtn = document.getElementById('spin-btn');
         const balanceDisplay = document.getElementById('user-balance');
-        const itemWidth = 112; 
+        const itemWidth = 112;
+
+        // Сохранение текущего прогресса пользователя
+        function saveProgress() {
+            localStorage.setItem('bm_balance', gameState.balance);
+            localStorage.setItem('bm_stats_opened', gameState.statsOpened);
+            localStorage.setItem('bm_stats_skins', gameState.statsSkins);
+            localStorage.setItem('bm_inventory', JSON.stringify(gameState.inventory));
+            updateUI();
+        }
+
+        // Обновление интерфейсов на экранах
+        function updateUI() {
+            balanceDisplay.innerText = gameState.balance;
+            document.getElementById('stat-opened').innerText = gameState.statsOpened;
+            document.getElementById('stat-skins').innerText = gameState.statsSkins;
+            
+            // Рендер содержимого кейса под лентой
+            const lootPreview = document.getElementById('loot-preview-container');
+            lootPreview.innerHTML = '';
+            casesConfig[gameState.currentCase].loot.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'loot-item';
+                div.innerHTML = `<span class="loot-icon">${item.icon}</span><div class="loot-name">${item.name}</div>`;
+                lootPreview.appendChild(div);
+            });
+
+            // Рендер инвентаря скинов в Профиле (без рублей!)
+            const invContainer = document.getElementById('inventory-container');
+            invContainer.innerHTML = '';
+            if (gameState.inventory.length === 0) {
+                invContainer.innerHTML = `<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>`;
+            } else {
+                gameState.inventory.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'inventory-item';
+                    div.innerHTML = `<div style="font-size:32px; margin-bottom:4px;">${item.icon}</div><div style="font-size:12px; font-weight:700;">${item.name}</div>`;
+                    invContainer.appendChild(div);
+                });
+            }
+        }
+
+        // Переключение вкладок меню
+        function showScreen(screenName) {
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active-screen'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
+            if(screenName === 'cases') {
+                document.getElementById('screen-cases').classList.add('active-screen');
+                document.getElementById('nav-btn-cases').classList.add('active');
+            } else {
+                document.getElementById('screen-profile').classList.add('active-screen');
+                document.getElementById('nav-btn-profile').classList.add('active');
+            }
+        }
+
+        // Выбор текущего активного кейса
+        function switchCase(caseKey) {
+            if (spinBtn.disabled) return;
+            gameState.currentCase = caseKey;
+            document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('current-case-name').innerText = `Текущий кейс: ${casesConfig[caseKey].name}`;
+            generateTape();
+            updateUI();
+        }
+
+        // Создание массива весов под выбранный кейс
+        let balancedPool = [];
+        function buildBalancedPool() {
+            balancedPool = [];
+            casesConfig[gameState.currentCase].loot.forEach(p => {
+                for(let i = 0; i < p.count; i++) {
+                    balancedPool.push({ icon: p.icon, name: p.name, value: p.value, type: p.type || 'money' });
+                }
+            });
+        }
 
         function generateTape() {
+            buildBalancedPool();
             tape.innerHTML = '';
             for (let i = 0; i < 55; i++) {
                 const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
@@ -385,11 +565,12 @@
                 item.className = 'roulette-item';
                 item.innerHTML = `<div class="item-emoji">${randomPrize.icon}</div><span>${randomPrize.name}</span>`;
                 item.dataset.value = randomPrize.value;
+                item.dataset.name = randomPrize.name;
+                item.dataset.icon = randomPrize.icon;
+                item.dataset.type = randomPrize.type;
                 tape.appendChild(item);
             }
         }
-
-        generateTape();
 
         function showAlert(message) {
             document.getElementById('custom-alert-msg').innerText = message;
@@ -397,13 +578,26 @@
         }
 
         function closeAlert() {
+            document.getElementById('custom-alert').classList.remove('remove');
             document.getElementById('custom-alert').classList.remove('show');
         }
 
         function startSpin() {
+            const selectedCase = casesConfig[gameState.currentCase];
+            
+            // Проверка стоимости кейса
+            if (gameState.balance < selectedCase.price) {
+                showAlert(`Недостаточно средств! Кейс стоит ${selectedCase.price} ₽. Твой баланс: ${gameState.balance} ₽.`);
+                return;
+            }
+
             spinBtn.disabled = true;
-            spinBtn.style.animation = 'none';
             spinBtn.style.opacity = '0.4';
+            
+            // Списываем стоимость прокрута
+            gameState.balance -= selectedCase.price;
+            gameState.statsOpened += 1; // Увеличиваем счетчик открытых кейсов
+            saveProgress();
             
             generateTape();
             tape.style.transition = 'none';
@@ -421,18 +615,32 @@
                 setTimeout(() => {
                     const winningItem = tape.children[targetIndex];
                     const prizeValue = parseInt(winningItem.dataset.value);
+                    const prizeName = winningItem.dataset.name;
+                    const prizeIcon = winningItem.dataset.icon;
+                    const prizeType = winningItem.dataset.type;
                     
-                    let currentBalance = parseInt(balanceDisplay.innerText);
-                    balanceDisplay.innerText = currentBalance + prizeValue;
+                    if (prizeType === 'money') {
+                        // Если выпали рубли — добавляем на баланс
+                        gameState.balance += prizeValue;
+                        showAlert(`Выигрыш: +${prizeValue} ₽ зачислено на баланс!`);
+                    } else {
+                        // Если скин/подарок — зачисляем в инвентарь профиля
+                        gameState.statsSkins += 1;
+                        gameState.inventory.push({ icon: prizeIcon, name: prizeName });
+                        showAlert(`Отличный дроп! Предмет "${prizeName}" отправлен в твой инвентарь в Профиле!`);
+                    }
                     
-                    showAlert(`Твой выигрыш составил +${prizeValue} ₽! Деньги успешно зачислены на игровой баланс.`);
+                    saveProgress();
                     
                     spinBtn.disabled = false;
                     spinBtn.style.opacity = '1';
-                    spinBtn.style.animation = 'pulse 2s infinite ease-in-out';
                 }, 4800);
             }, 50);
         }
+
+        // Первичная подгрузка данных при старте страницы
+        updateUI();
+        generateTape();
     </script>
 </body>
 </html>
