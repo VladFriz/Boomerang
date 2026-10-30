@@ -23,7 +23,6 @@
             overflow-x: hidden;
             background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #080911 70%);
         }
-
         .header {
             display: flex;
             justify-content: space-between;
@@ -44,6 +43,7 @@
             letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(88, 86, 214, 0.6);
         }
+
         .balance-container {
             display: flex;
             align-items: center;
@@ -68,7 +68,6 @@
         .app-screen.active-screen {
             display: block;
         }
-
         .section-title {
             font-size: 22px;
             font-weight: 800;
@@ -169,7 +168,6 @@
             overflow: hidden;
             border: 1px solid #1c1d3a;
         }
-
         .roulette-wrapper::before {
             content: '';
             position: absolute;
@@ -206,7 +204,6 @@
             border: 1px solid #23254e;
         }
 
-        /* КРУТЫЕ АДАПТИВНЫЕ СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ТВОИХ СКИНОВ */
         .skin-photo-img {
             width: 75px;
             height: 55px;
@@ -219,6 +216,7 @@
             font-size: 36px;
             margin-bottom: 6px;
         }
+
         .btn-open-case {
             background: linear-gradient(135deg, #ffb800 0%, #ff9000 100%);
             color: #07080f;
@@ -229,7 +227,6 @@
             font-size: 17px;
             cursor: pointer;
         }
-
         .profile-container {
             padding: 15px;
         }
@@ -550,7 +547,6 @@
             localStorage.setItem('bm_inventory', JSON.stringify(gameState.inventory));
             updateUI();
         }
-
         function updateUI() {
             if (balanceDisplay) balanceDisplay.innerText = gameState.balance;
             if (document.getElementById('stat-opened')) document.getElementById('stat-opened').innerText = gameState.statsOpened;
@@ -563,8 +559,10 @@
                     const div = document.createElement('div');
                     div.className = 'loot-item';
                     if (item.type === 'skin') {
-                        div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'"><div class="loot-name">${item.name}</div>`;
+                        // ТЕКСТ С НАЗВАНИЕМ ПОЛНОСТЬЮ УБРАН - выводится только фото
+                        div.innerHTML = `<img src="${item.icon}" class="skin-photo-img" onerror="this.src='https://icons8.com'">`;
                     } else {
+                        // Для рублей текст с суммой остается
                         div.innerHTML = `<span class="money-text-icon">${item.icon}</span><div class="loot-name">${item.name}</div>`;
                     }
                     lp.appendChild(div);
@@ -590,6 +588,7 @@
                 }
             }
         }
+
         function showScreen(screenName) {
             document.getElementById('screen-cases').style.display = 'none';
             document.getElementById('screen-profile').style.display = 'none';
@@ -601,39 +600,21 @@
             document.getElementById('screen-' + screenName).style.display = 'block';
             document.getElementById('nav-btn-' + screenName).classList.add('active');
         }
-
-        // БАГ С ОПЕЧАТКОЙ ТЕПЕРЬ ПОЛНОСТЬЮ ИСПРАВЛЕН ВО ВСЕЙ ФУНКЦИИ
         function activateAdminPromo() {
             const rawCode = document.getElementById('promo-input-field').value.trim();
-            
-            function triggerPromoError() {
-                showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно.");
-            }
-
-            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) {
-                triggerPromoError();
-                return;
-            }
-
+            function triggerPromoError() { showAlert("❌ Ошибка. Код недействителен, уже активирован или введён неверно."); }
+            if (!rawCode.startsWith("BOOM-") || localStorage.getItem('used_hash_' + rawCode)) { triggerPromoError(); return; }
             const parts = rawCode.split('-');
-            if (parts.length < 4) { 
-                triggerPromoError(); 
-                return; 
-            }
-
-            // ПРАВИЛЬНЫЙ ВЫБОР: Считываем сумму номинала строго со 3-го индекса правильного массива строк parts
+            if (parts.length < 4) { triggerPromoError(); return; }
             const promoAmount = parseInt(parts[3], 10);
-
-            if (isNaN(promoAmount) || promoAmount <= 0) {
-                triggerPromoError();
-                return;
-            }
-
+            if (isNaN(promoAmount) || promoAmount <= 0) { triggerPromoError(); return; }
             gameState.balance += promoAmount;
-            localStorage.setItem('used_hash_' + rawCode, 'true'); 
+            localStorage.setItem('used_hash_' + rawCode, 'true');
             document.getElementById('promo-input-field').value = '';
             saveProgress();
-            showAlert(`⚡ Топливо залито! На игровой баланс успешно начислено +${promoAmount} ₽!`);
+            
+            // Твой кастомный текст при активации
+            showAlert(`🎉 Успешно!\nПромокод активирован, вам начислено +${promoAmount} ₽ на игровой баланс!`);
         }
 
         function switchCase(caseKey) {
@@ -713,13 +694,14 @@
                     const pIcon = wi.getAttribute('data-icon');
                     const pType = wi.getAttribute('data-type');
                     
+                    // Твоя кастомная логика для разных уведомлений выигрыша
                     if (pType === 'money') {
                         gameState.balance += pVal;
-                        showAlert('Выигрыш: +' + pVal + ' ₽ зачислено на баланс!');
+                        showAlert(`💰 Выигрыш успешно начислен на баланс! +${pVal} ₽`);
                     } else {
                         gameState.statsSkins += 1;
                         gameState.inventory.push({ icon: pIcon, name: pName, isSkin: true });
-                        showAlert('Отличный дроп! Предмет "' + pName + '" отправлен в инвентарь!');
+                        showAlert(`🔥 Отличный дроп!\nПредмет "${pName}" успешно добавлен в твой инвентарь в Профиле!`);
                     }
                     saveProgress();
                     if (spinBtn) { spinBtn.disabled = false; spinBtn.style.opacity = '1'; }
