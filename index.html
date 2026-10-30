@@ -481,27 +481,30 @@
             casesConfig[gameState.currentCase].loot.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'loot-item';
-                div.innerHTML = `<span class="loot-icon">${item.icon}</span><div class="loot-name">${item.name}</div>`;
+                div.innerHTML = '<span class="loot-icon">' + item.icon + '</span><div class="loot-name">' + item.name + '</div>';
                 lootPreview.appendChild(div);
             });
 
             const invContainer = document.getElementById('inventory-container');
             invContainer.innerHTML = '';
             if (gameState.inventory.length === 0) {
-                invContainer.innerHTML = `<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>`;
+                invContainer.innerHTML = '<div class="inventory-empty">Здесь будут отображаться выбитые подарки и скины</div>';
             } else {
                 gameState.inventory.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'inventory-item';
-                    div.innerHTML = `<div style="font-size:32px; margin-bottom:4px;">${item.icon}</div><div style="font-size:12px; font-weight:700;">${item.name}</div>`;
+                    div.innerHTML = '<div style="font-size:32px; margin-bottom:4px;">' + item.icon + '</div><div style="font-size:12px; font-weight:700;">' + item.name + '</div>';
                     invContainer.appendChild(div);
                 });
             }
         }
 
         function showScreen(screenName) {
-            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active-screen'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('screen-cases').classList.remove('active-screen');
+            document.getElementById('screen-profile').classList.remove('active-screen');
+            document.getElementById('nav-btn-cases').classList.remove('active');
+            document.getElementById('nav-btn-profile').classList.remove('active');
+            
             if(screenName === 'cases') {
                 document.getElementById('screen-cases').classList.add('active-screen');
                 document.getElementById('nav-btn-cases').classList.add('active');
@@ -514,9 +517,9 @@
         function switchCase(caseKey) {
             if (spinBtn.disabled) return;
             gameState.currentCase = caseKey;
-            document.querySelectorAll('.case-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.case-card').forEach(function(c) { c.classList.remove('active'); });
             event.currentTarget.classList.add('active');
-            document.getElementById('current-case-name').innerText = `Текущий кейс: ${casesConfig[caseKey].name}`;
+            document.getElementById('current-case-name').innerText = 'Текущий кейс: ' + casesConfig[caseKey].name;
             generateTape();
             updateUI();
         }
@@ -524,7 +527,7 @@
         let balancedPool = [];
         function buildBalancedPool() {
             balancedPool = [];
-            casesConfig[gameState.currentCase].loot.forEach(p => {
+            casesConfig[gameState.currentCase].loot.forEach(function(p) {
                 for(let i = 0; i < p.count; i++) {
                     balancedPool.push({ icon: p.icon, name: p.name, value: p.value, type: p.type || 'money' });
                 }
@@ -538,11 +541,11 @@
                 const randomPrize = balancedPool[Math.floor(Math.random() * balancedPool.length)];
                 const item = document.createElement('div');
                 item.className = 'roulette-item';
-                item.innerHTML = `<div class="item-emoji">${randomPrize.icon}</div><span>${randomPrize.name}</span>`;
-                item.dataset.value = randomPrize.value;
-                item.dataset.name = randomPrize.name;
-                item.dataset.icon = randomPrize.icon;
-                item.dataset.type = randomPrize.type;
+                item.innerHTML = '<div class="item-emoji">' + randomPrize.icon + '</div><span>' + randomPrize.name + '</span>';
+                item.setAttribute('data-value', randomPrize.value);
+                item.setAttribute('data-name', randomPrize.name);
+                item.setAttribute('data-icon', randomPrize.icon);
+                item.setAttribute('data-type', randomPrize.type);
                 tape.appendChild(item);
             }
         }
@@ -559,7 +562,7 @@
         function startSpin() {
             const selectedCase = casesConfig[gameState.currentCase];
             if (gameState.balance < selectedCase.price) {
-                showAlert(`Недостаточно средств! Кейс стоит ${selectedCase.price} ₽. Твой баланс: ${gameState.balance} ₽.`);
+                showAlert('Недостаточно средств! Кейс стоит ' + selectedCase.price + ' ₽. Твой баланс: ' + gameState.balance + ' ₽.');
                 return;
             }
 
@@ -574,29 +577,29 @@
             tape.style.transition = 'none';
             tape.style.transform = 'translateX(0px)';
             
-            setTimeout(() => {
+            setTimeout(function() {
                 const targetIndex = 38; 
                 const wrapperWidth = document.querySelector('.roulette-wrapper').offsetWidth;
                 const randomShift = Math.floor(Math.random() * 40) - 20; 
                 const targetPosition = -(targetIndex * itemWidth) + (wrapperWidth / 2) - (itemWidth / 2) + randomShift;
                 
                 tape.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.85, 0.1, 1)';
-                tape.style.transform = `translateX(${targetPosition}px)`;
+                tape.style.transform = 'translateX(' + targetPosition + 'px)';
                 
-                setTimeout(() => {
+                setTimeout(function() {
                     const winningItem = tape.children[targetIndex];
-                    const prizeValue = parseInt(winningItem.dataset.value);
-                    const prizeName = winningItem.dataset.name;
-                    const prizeIcon = winningItem.dataset.icon;
-                    const prizeType = winningItem.dataset.type;
+                    const prizeValue = parseInt(winningItem.getAttribute('data-value'));
+                    const prizeName = winningItem.getAttribute('data-name');
+                    const prizeIcon = winningItem.getAttribute('data-icon');
+                    const prizeType = winningItem.getAttribute('data-type');
                     
                     if (prizeType === 'money') {
                         gameState.balance += prizeValue;
-                        showAlert(`Выигрыш: +${prizeValue} ₽ зачислено на баланс!`);
+                        showAlert('Выигрыш: +' + prizeValue + ' ₽ зачислено на баланс!');
                     } else {
                         gameState.statsSkins += 1;
                         gameState.inventory.push({ icon: prizeIcon, name: prizeName });
-                        showAlert(`Отличный дроп! Предмет "${prizeName}" отправлен в твой инвентарь в Профиле!`);
+                        showAlert('Отличный дроп! Предмет "' + prizeName + '" отправлен в твой инвентарь в Профиле!');
                     }
                     
                     saveProgress();
