@@ -295,7 +295,7 @@
         }
 
         .loot-icon { font-size: 24px; margin-bottom: 4px; display: block; }
-        .loot-name { font-size: 10px; color: #b3b6db; font-weight: 700; }
+        .loot-name { font-size: 11px; color: #b3b6db; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -314,7 +314,6 @@
     <!-- РАЗДЕЛЫ КЕЙСОВ -->
     <div class="section-title">Доступные кейсы</div>
     <div class="cases-category-grid">
-        <!-- Относительный путь гарантирует отображение картинки -->
         <div class="case-card active">
             <img src="image.png" onerror="this.src='https://ibb.co'" alt="Бомж Кейс">
             <div class="case-card-title">Бомж Кейс</div>
@@ -337,14 +336,14 @@
         <button class="btn-open-case" id="spin-btn" onclick="startSpin()">Крутить Кейс</button>
     </div>
 
-    <!-- ТЕКУЩИЙ ЛУТ -->
-    <div class="section-title">Содержимое и шансы</div>
+    <!-- ТЕКУЩИЙ ЛУТ (ПРОЦЕНТЫ ПОЛНОСТЬЮ УБРАНЫ) -->
+    <div class="section-title">Содержимое кейса</div>
     <div class="loot-preview-grid">
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">1 ₽ (98%)</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">2 ₽ (1%)</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">3 ₽ (0.5%)</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">5 ₽ (0.4%)</div></div>
-        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">10 ₽ (0.1%)</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">1 ₽</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">2 ₽</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">3 ₽</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">5 ₽</div></div>
+        <div class="loot-item"><span class="loot-icon">🪙</span><div class="loot-name">10 ₽</div></div>
     </div>
 
     <!-- Новое кастомное уведомление -->
@@ -356,6 +355,8 @@
         </div>
     </div>
     <script>
+        // Математическая точность пула призов: 
+        // 1 рубль - 98%, 2 рубля - 1%, 3 рубля - 0.5%, 5 рублей - 0.4%, 10 рублей - 0.1%
         const prizeConfig = [
             { icon: '🪙', name: '1 ₽', value: 1, count: 980 },
             { icon: '🪙', name: '2 ₽', value: 2, count: 10 },
@@ -424,7 +425,6 @@
                     let currentBalance = parseInt(balanceDisplay.innerText);
                     balanceDisplay.innerText = currentBalance + prizeValue;
                     
-                    // Показываем красивое внутреннее окно без упоминания ссылок гитхаба
                     showAlert(`Твой выигрыш составил +${prizeValue} ₽! Деньги успешно зачислены на игровой баланс.`);
                     
                     spinBtn.disabled = false;
